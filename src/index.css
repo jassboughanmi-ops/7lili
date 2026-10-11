@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+html, body, #root, #v, main, dialog {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+*::-webkit-scrollbar, ::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}

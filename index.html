@@ -1,0 +1,1517 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1"><title>German Memory Coach - INTO Vokabeltrainer</title><meta name="description" content="Offline German vocabulary training with active recall and spaced repetition, packaged as an Android app."><meta property="og:title" content="German Memory Coach"><meta property="og:description" content="Offline German vocabulary training with active recall and spaced repetition, packaged as an Android app."><meta property="og:type" content="website"><meta name="theme-color" content="#0b3c68"><meta name="mobile-web-app-capable" content="yes"><link rel="icon" type="image/svg+xml" href="/into-icon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" href="/icon-192.png"><script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistrations().then(function(regs){
+    for(var i=0;i<regs.length;i++){regs[i].unregister();}
+  });
+}
+if('caches' in window){
+  caches.keys().then(function(keys){
+    for(var i=0;i<keys.length;i++){caches.delete(keys[i]);}
+  });
+}
+</script><style>
+:root{
+  --bg:#f8f9fa;--c:#ffffff;--c-subtle:#f1f5f9;--t:#1e293b;--m:#64748b;
+  --a:#0b3c68;--a-hover:#072a4a;--a-subtle:rgba(11,60,104,0.08);--a-glow:rgba(11,60,104,0.22);
+  --ok:#15803d;--ok-bg:#f0fdf4;--ok-bd:#bbf7d0;
+  --w:#b45309;--w-bg:#fffbeb;--w-bd:#fde68a;
+  --bad:#b91c1c;--bad-bg:#fef2f2;--bad-bd:#fecaca;
+  --bd:#e2e8f0;--bd-focus:#0b3c68;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.02);
+  --shadow-md:0 4px 14px rgba(0,0,0,0.06);
+  --shadow-lg:0 10px 25px -5px rgba(0,0,0,0.1);
+  --radius-sm:8px;--radius-md:12px;--radius-lg:16px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#0f141c;--c:#171d26;--c-subtle:#1f2633;--t:#f1f5f9;--m:#94a3b8;
+    --a:#5fa5d9;--a-hover:#7bb7e2;--a-subtle:rgba(95,165,217,0.12);--a-glow:rgba(95,165,217,0.25);
+    --ok:#4ade80;--ok-bg:rgba(74,222,128,0.12);--ok-bd:rgba(74,222,128,0.3);
+    --w:#fbbf24;--w-bg:rgba(251,191,36,0.12);--w-bd:rgba(251,191,36,0.3);
+    --bad:#f87171;--bad-bg:rgba(248,113,113,0.12);--bad-bd:rgba(248,113,113,0.3);
+    --bd:#262e3d;--bd-focus:#5fa5d9;
+    --shadow-sm:0 1px 3px rgba(0,0,0,0.2);
+    --shadow-md:0 4px 14px rgba(0,0,0,0.3);
+    --shadow-lg:0 10px 25px -5px rgba(0,0,0,0.4);
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body,#v,main,dialog,.side-drawer-body,.table-wrap,.card{
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+*::-webkit-scrollbar,::-webkit-scrollbar{
+  display:none!important;
+  width:0!important;
+  height:0!important;
+  background:transparent!important;
+}
+body{
+  margin:0;font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+  background:var(--bg);color:var(--t);
+  padding:0 0 calc(74px + env(safe-area-inset-bottom,0px)) 0;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+}
+/* Vertical, mobile-first column container */
+main{
+  width:100%;max-width:520px;margin:0 auto;padding:14px 14px 24px;
+  display:flex;flex-direction:column;
+}
+#v{width:100%}
+/* Persistent bottom navigation bar */
+nav{
+  position:fixed;bottom:0;left:0;right:0;width:100%;max-width:520px;margin:0 auto;
+  display:flex;background:var(--c);background:color-mix(in srgb,var(--c) 95%,transparent);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--bd);z-index:50;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  box-shadow:0 -2px 12px rgba(0,0,0,0.04);
+}
+.app-header{
+  width:100%;max-width:520px;position:sticky;top:0;z-index:40;
+  background:var(--c);background:color-mix(in srgb,var(--c) 96%,transparent);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--bd);padding-top:env(safe-area-inset-top,0px);
+}
+.status-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:4px 14px 2px;font-size:11.5px;font-weight:600;color:var(--m);
+  letter-spacing:0.02em;user-select:none;
+}
+.status-icons{display:flex;align-items:center;gap:6px}
+.top-app-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 14px 10px;
+}
+.app-title-group{display:flex;align-items:center;gap:10px}
+.app-logo-badge{
+  width:36px;height:36px;border-radius:9px;background:#ffffff;
+  border:1.5px solid var(--bd);box-shadow:0 1px 3px rgba(0,0,0,0.06);
+  display:flex;align-items:center;justify-content:center;
+  padding:3px;flex-shrink:0;overflow:hidden;
+}
+@media(prefers-color-scheme:dark){
+  .app-logo-badge{background:#1e2633;border-color:#334155}
+}
+.app-title{font-size:16px;font-weight:750;letter-spacing:-0.02em;color:var(--t);line-height:1.2}
+.app-subtitle{font-size:11.5px;color:var(--m);font-weight:500}
+.brand-hero{
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:18px 16px 16px;margin-bottom:14px;
+  background:linear-gradient(180deg,var(--c) 0%,var(--c-subtle) 100%);
+  border:1.5px solid var(--bd);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+}
+.brand-hero::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,#0B3C68 0%,#0B3C68 62%,#181818 62%,#181818 75%,#DE222B 75%,#DE222B 88%,#FFCC00 88%,#FFCC00 100%);
+}
+.brand-hero-logo{
+  width:100%;max-width:240px;margin:2px auto 8px;display:flex;justify-content:center;
+}
+.into-main-logo{width:100%;max-width:220px;height:auto;display:block}
+.brand-hero-title{font-size:23px;font-weight:800;letter-spacing:-0.03em;color:#0B3C68;margin:2px 0 2px}
+@media(prefers-color-scheme:dark){
+  .brand-hero-title{color:#7bb7e2}
+}
+.brand-hero-sub{font-size:12px;color:var(--m);font-weight:600;letter-spacing:0.04em;text-transform:uppercase}
+nav button svg{width:18px;height:18px;margin-bottom:2px;stroke-width:2.2}
+nav button span{font-size:10.5px;font-weight:600;letter-spacing:-0.01em}
+nav button{
+  flex:1;padding:8px 2px 6px;border:0;background:none;color:var(--m);
+  font:inherit;font-size:11px;font-weight:500;cursor:pointer;
+  transition:color .15s,transform .1s;position:relative;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:50px;
+}
+nav button:active{transform:scale(0.92)}
+nav .on{color:var(--a);font-weight:700}
+nav .on::after{
+  content:"";position:absolute;top:0;left:20%;right:20%;height:3px;
+  background:var(--a);border-radius:0 0 3px 3px;
+  box-shadow:0 1px 4px var(--a-glow);
+}
+
+h1{font-size:23px;font-weight:700;letter-spacing:-0.02em;margin:2px 0 12px}
+h2{font-size:16px;font-weight:600;letter-spacing:-0.01em;margin:0 0 10px}
+.card{
+  background:var(--c);border:1px solid var(--bd);border-radius:var(--radius-md);
+  padding:15px;margin:0 0 12px;box-shadow:var(--shadow-sm);
+  transition:box-shadow .2s,border-color .2s;
+}
+.card:hover{box-shadow:var(--shadow-md)}
+.m{color:var(--m);font-size:13.5px;line-height:1.45}
+
+/* Touch-optimized controls */
+button.b, a.b{
+  background:var(--a);color:#fff;border:0;border-radius:var(--radius-sm);
+  padding:11px 16px;font:inherit;font-size:14.5px;font-weight:600;
+  cursor:pointer;margin:4px 0;box-shadow:0 2px 6px var(--a-glow);
+  transition:all .15s ease;display:inline-flex;align-items:center;justify-content:center;
+  min-height:44px;text-decoration:none;box-sizing:border-box;
+}
+button.b:hover, a.b:hover{background:var(--a-hover);filter:brightness(1.08)}
+button.b:active:not(:disabled), a.b:active{transform:scale(0.96)}
+button.b.s, a.b.s{
+  background:transparent;color:var(--a);border:1.5px solid var(--a);box-shadow:none;
+}
+button.b.s:hover, a.b.s:hover{background:var(--a-subtle)}
+button.b.d, a.b.d{background:var(--bad);color:#fff;box-shadow:0 2px 6px rgba(185,28,28,0.2)}
+button.b.d:hover, a.b.d:hover{filter:brightness(1.1)}
+button:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+
+.btn-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 4px}
+.btn-grid-2 > button.b, .btn-grid-2 > a.b{width:100%;margin:0}
+.btn-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0 4px}
+.btn-grid-3 > button.b, .btn-grid-3 > a.b{width:100%;margin:0;padding:10px 8px;font-size:13.5px}
+.btn-row{display:flex;gap:10px;margin:8px 0 4px}
+.btn-row > button.b, .btn-row > a.b{flex:1;margin:0}
+
+input,select,textarea{
+  font:inherit;padding:11px 12px;border:1px solid var(--bd);border-radius:var(--radius-sm);
+  background:var(--c);color:var(--t);width:100%;max-width:100%;transition:border-color .15s,box-shadow .15s;
+  margin:4px 0 6px;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none;border-color:var(--bd-focus);box-shadow:0 0 0 3px var(--a-glow);
+}
+input.big{width:100%;font-size:19px;padding:13px 14px;font-weight:500}
+
+/* Vertical stats grid */
+.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.st{text-align:center;padding:10px 8px}
+.st b{display:block;font-size:22px;font-weight:700;color:var(--t);margin-bottom:2px}
+
+.pill{
+  display:inline-block;padding:2px 8px;border-radius:99px;font-size:11.5px;
+  font-weight:600;border:1px solid var(--bd);background:var(--c-subtle);margin-right:4px;
+}
+.ok{color:var(--ok);background:var(--ok-bg);border-color:var(--ok-bd)}
+.bad{color:var(--bad);background:var(--bad-bg);border-color:var(--bad-bd)}
+.w{color:var(--w);background:var(--w-bg);border-color:var(--w-bd)}
+.pill.due-now{
+  color:var(--w);background:var(--w-bg);border-color:var(--w-bd);font-weight:600;
+}
+.pill.in-prog{
+  color:var(--a);background:var(--a-subtle);border-color:var(--a-glow);font-weight:600;
+}
+@media(prefers-color-scheme:dark){
+  .pill.due-now{color:var(--w);background:var(--w-bg);border-color:var(--w-bd)}
+  .pill.in-prog{color:var(--a);background:var(--a-subtle);border-color:var(--a-glow)}
+}
+
+/* Multiple choice cards */
+.opt{
+  display:block;width:100%;text-align:left;padding:14px 14px;margin:8px 0;
+  border:1.5px solid var(--bd);border-radius:var(--radius-md);background:var(--c);
+  color:var(--t);font:inherit;font-size:15px;cursor:pointer;
+  transition:all .15s cubic-bezier(0.4,0,0.2,1);position:relative;
+  min-height:50px;
+}
+.opt:hover{border-color:var(--a);background:var(--a-subtle)}
+.opt:active{transform:scale(0.98)}
+.opt.on{
+  border-color:var(--a);background:var(--a-subtle);box-shadow:0 0 0 2px var(--a-glow);
+  font-weight:600;
+}
+
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  margin:4px 0 8px;
+  border-radius:var(--radius-sm);
+}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:2px 0}
+td,th{padding:7px 5px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:middle}
+th{color:var(--m);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:0.03em;white-space:nowrap}
+th.tc,td.tc{text-align:center}
+th.tr,td.tr{text-align:right}
+.tbl-num{font-variant-numeric:tabular-nums;font-weight:600}
+.tbl-zero{color:var(--m);font-weight:400;opacity:0.55}
+.tbl-mature{color:var(--ok);font-weight:700}
+.tbl-ok{color:var(--ok);font-weight:700}
+.tbl-warn{color:var(--w);font-weight:700}
+.tbl-bad{color:var(--bad);font-weight:700}
+.tbl-sub{font-size:10px;color:var(--m);display:block;margin-top:-2px;font-weight:400}
+.tbl-bar{display:flex;height:3px;border-radius:2px;overflow:hidden;background:var(--c-subtle);margin-top:3px;max-width:140px}
+.tbl-bar>span{height:100%;display:block}
+.tbl-skill-title{font-weight:600;color:var(--t);display:block;font-size:13px;line-height:1.25}
+.tbl-count{font-size:11px;color:var(--m);font-weight:400;margin-left:4px}
+.mastery-legend{
+  display:flex;flex-wrap:wrap;gap:12px;margin:0 0 10px;font-size:11.5px;color:var(--m);font-weight:500
+}
+.leg-item{display:inline-flex;align-items:center;gap:5px}
+.leg-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.leg-learn{background:#f59e0b}
+.leg-rev{background:var(--a)}
+.leg-mat{background:var(--ok)}
+@media(max-width:420px){
+  td,th{padding:6px 3px;font-size:12px}
+  th{font-size:10.5px}
+  .tbl-skill-title{font-size:12px}
+  .mastery-legend{gap:8px;font-size:11px}
+}
+
+.row{
+  padding:11px 8px;border-bottom:1px solid var(--bd);cursor:pointer;
+  transition:background .15s,padding .15s;border-radius:6px;
+}
+.row:hover{background:var(--a-subtle);padding-left:10px}
+
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:8px 0 4px}
+.fg select{margin:0}
+.lh{display:flex;align-items:center;justify-content:space-between;margin:8px 0;font-size:13px;color:var(--m)}
+.lk{color:var(--a);cursor:pointer;text-decoration:none;font-weight:600;font-size:12.5px}
+.lk:hover{text-decoration:underline}
+.act{display:flex;gap:8px;margin-top:10px}
+.act button{flex:1;margin:0}
+.card.dz{border-color:var(--bad);background:rgba(185,28,28,0.03)}
+.card.dz h2{color:var(--bad)}
+
+/* Interactive Study Chart & Activity Styles */
+.chart-card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:12px}
+.chart-headline{font-size:16px;font-weight:700;margin:0;color:var(--t)}
+.chart-sub{font-size:12px;color:var(--m);margin-top:2px}
+.chart-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:12px;background:var(--c-subtle);font-size:11.5px;font-weight:600;color:var(--a);border:1px solid var(--bd)}
+.chart-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.chart-stat-item{background:var(--c-subtle);border-radius:var(--radius-sm);padding:8px 10px;text-align:center;border:1px solid var(--bd)}
+.chart-stat-val{font-size:17px;font-weight:800;color:var(--t);font-variant-numeric:tabular-nums;line-height:1.2}
+.chart-stat-lbl{font-size:10.5px;color:var(--m);font-weight:600;text-transform:uppercase;letter-spacing:0.02em;margin-top:2px}
+
+.chart-container{
+  background:var(--c-subtle);
+  border:1px solid var(--bd);
+  border-radius:var(--radius-md);
+  padding:14px 10px 10px;
+  position:relative;
+  margin-bottom:12px;
+}
+.chart-bars-wrap{
+  display:flex;
+  gap:6px;
+  align-items:flex-end;
+  height:120px;
+  padding:0 2px;
+  position:relative;
+}
+.chart-target-line{
+  position:absolute;left:0;right:0;border-top:1.5px dashed var(--a);
+  opacity:0.35;pointer-events:none;z-index:1;
+}
+.chart-target-lbl{
+  position:absolute;right:4px;font-size:10px;color:var(--a);font-weight:600;
+  transform:translateY(-100%);padding-bottom:2px;background:var(--c-subtle);
+  padding:1px 4px;border-radius:3px;
+}
+.chart-col{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  height:100%;
+  justify-content:flex-end;
+  cursor:pointer;
+  position:relative;
+  border-radius:6px;
+  padding:4px 2px 2px;
+  transition:background .15s ease;
+  z-index:2;
+}
+.chart-col:hover{background:var(--a-subtle)}
+.chart-col.selected{background:var(--a-subtle);box-shadow:inset 0 0 0 1.5px var(--a)}
+.chart-bar-outer{
+  width:100%;
+  max-width:28px;
+  height:86px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:center;
+  position:relative;
+}
+.chart-bar-fill{
+  width:100%;
+  background:var(--a);
+  border-radius:4px 4px 1px 1px;
+  min-height:3px;
+  transition:all .25s cubic-bezier(0.4,0,0.2,1);
+  transform-origin:bottom;
+  position:relative;
+  box-shadow:0 1px 3px rgba(0,0,0,0.08);
+}
+.chart-col:hover .chart-bar-fill{
+  filter:brightness(1.15);
+  box-shadow:0 0 8px var(--a-glow);
+}
+.chart-col.selected .chart-bar-fill{
+  background:var(--a);
+  box-shadow:0 0 10px var(--a-glow);
+}
+.chart-bar-fill.target-met{
+  background:linear-gradient(180deg, #10b981 0%, #059669 100%);
+}
+.chart-col.is-today .chart-bar-fill{
+  border:1px solid #fff;
+}
+.chart-bar-val{
+  font-size:10px;
+  font-weight:700;
+  color:var(--t);
+  margin-bottom:3px;
+  font-variant-numeric:tabular-nums;
+  transition:opacity .15s;
+}
+.chart-col-date{
+  margin-top:6px;
+  font-size:11px;
+  font-weight:600;
+  color:var(--m);
+  text-align:center;
+  line-height:1.2;
+}
+.chart-col.is-today .chart-col-date{
+  color:var(--a);
+  font-weight:800;
+}
+.chart-col-dayname{
+  font-size:9.5px;
+  font-weight:500;
+  text-transform:uppercase;
+  opacity:0.8;
+  display:block;
+}
+
+.chart-day-detail{
+  background:var(--c);
+  border:1.5px solid var(--bd);
+  border-radius:var(--radius-sm);
+  padding:12px 14px;
+  margin-top:10px;
+  animation:fade .2s ease-out;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.chart-day-detail-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:700;
+  font-size:13.5px;
+  color:var(--t);
+}
+.chart-day-detail-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  font-size:11.5px;
+  padding:2px 8px;
+  border-radius:10px;
+  font-weight:600;
+}
+.chart-day-sessions{
+  font-size:12px;
+  color:var(--m);
+  line-height:1.45;
+}
+.chart-overview-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid var(--bd);
+}
+.chart-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:var(--c-subtle);
+  border:1px solid var(--bd);
+  border-radius:20px;
+  padding:4px 10px;
+  font-size:11.5px;
+  color:var(--t);
+}
+.chart-chip b{color:var(--a)}
+
+.ban{
+  background:var(--w-bg);border:1px solid var(--w-bd);color:var(--w);
+  border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;font-size:13.5px;font-weight:500;
+}
+
+/* Vertical Bottom Sheet Dialog */
+dialog{
+  position:fixed;bottom:0;top:auto;left:0;right:0;max-width:520px;width:100%;margin:0 auto;
+  border-radius:24px 24px 0 0;border:1px solid var(--bd);border-bottom:0;
+  padding:12px 18px calc(24px + env(safe-area-inset-bottom,0px));
+  max-height:88vh;overflow-y:auto;background:var(--bg);color:var(--t);
+  box-shadow:var(--shadow-lg);animation:shUp .26s cubic-bezier(0.16,1,0.3,1);
+  touch-action:pan-y;
+  overscroll-behavior:contain;
+}
+dialog::backdrop{
+  background:rgba(0,0,0,0.52);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  animation:fadeBackdrop .2s ease-out;
+}
+.dlg-drag-bar{
+  width:100%;padding:8px 0 12px;display:flex;align-items:center;justify-content:center;
+  cursor:grab;touch-action:none;user-select:none;min-height:26px;
+}
+.dlg-drag-bar:active{cursor:grabbing}
+.dlg-handle{
+  width:44px;height:5px;background:var(--bd);border-radius:99px;
+  transition:background .15s ease,transform .15s ease;
+}
+.dlg-drag-bar:hover .dlg-handle{background:var(--m)}
+.dlg-drag-bar:active .dlg-handle{transform:scaleY(1.3);background:var(--a)}
+dialog.closing{animation:shDown .2s cubic-bezier(0.4,0,1,1) forwards!important}
+dialog.closing::backdrop{animation:fadeOutBackdrop .2s ease forwards!important}
+@keyframes shUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes shDown{from{transform:translateY(0)}to{transform:translateY(105%)}}
+@keyframes fadeBackdrop{from{opacity:0}to{opacity:1}}
+@keyframes fadeOutBackdrop{from{opacity:1}to{opacity:0}}
+
+label{display:block;font-size:12.5px;font-weight:600;color:var(--m);margin-top:10px;margin-bottom:2px}
+dialog input,dialog textarea{width:100%}
+.big2{font-size:26px;font-weight:700;letter-spacing:-0.02em;margin:6px 0}
+
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes sh{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes pop{0%{transform:scale(0.98)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+@keyframes gr{from{transform:scaleY(0)}}
+@keyframes rg{from{stroke-dasharray:0 251.3}}
+.an>*{animation:fi .25s cubic-bezier(0.16,1,0.3,1) both}
+.an>*:nth-child(2){animation-delay:.03s}
+.an>*:nth-child(3){animation-delay:.06s}
+
+kbd{
+  font:11px/1.2 monospace;border:1px solid currentColor;border-radius:4px;
+  padding:2px 5px;margin-right:7px;opacity:.75;vertical-align:middle;
+}
+.pb{height:7px;background:var(--bd);border-radius:4px;margin:10px 0;overflow:hidden}
+.pb i{
+  display:block;height:100%;background:linear-gradient(90deg,var(--a),var(--a-hover));
+  border-radius:4px;transition:width .4s ease;
+}
+
+.okc{border-color:var(--ok)!important;box-shadow:0 0 0 3px rgba(21,128,61,0.2)!important;animation:pop .3s ease}
+.badc{border-color:var(--bad)!important;box-shadow:0 0 0 3px rgba(185,28,28,0.2)!important;animation:sh .35s ease}
+.wc{border-color:var(--w)!important;box-shadow:0 0 0 3px rgba(180,83,9,0.2)!important}
+.ring{animation:rg .9s ease-out;transition:stroke-dasharray .6s ease}
+
+.chip{
+  display:inline-block;padding:8px 12px;margin:3px 4px 3px 0;border:1px solid var(--bd);
+  border-radius:99px;background:var(--c);color:var(--t);font:inherit;font-size:13.5px;
+  font-weight:500;cursor:pointer;transition:all .15s ease;
+}
+.chip:hover{border-color:var(--a);background:var(--a-subtle)}
+.chip:active{transform:scale(0.94)}
+.chip.on{background:var(--a);color:#fff;border-color:var(--a);box-shadow:0 2px 6px var(--a-glow)}
+.chip.off{opacity:.45;border-style:dashed}
+
+.menu-dots-btn{
+  width:38px;height:38px;border-radius:10px;border:1px solid var(--bd);
+  background:var(--c);color:var(--t);display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s ease;box-shadow:var(--shadow-sm);flex-shrink:0;
+  padding:0;
+}
+.menu-dots-btn:hover{background:var(--a-subtle);border-color:var(--a);color:var(--a)}
+.menu-dots-btn:active{transform:scale(0.92)}
+
+.drawer-backdrop{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(15,23,42,0.45);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  z-index:900;opacity:0;pointer-events:none;transition:opacity .25s ease;
+}
+.drawer-backdrop.open{opacity:1;pointer-events:auto}
+
+.side-drawer{
+  position:fixed;top:0;right:0;bottom:0;width:100%;max-width:440px;
+  background:var(--bg);box-shadow:-4px 0 24px rgba(0,0,0,0.22);
+  z-index:910;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .28s cubic-bezier(0.16,1,0.3,1);
+  padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px) 0;
+}
+.side-drawer.open{transform:translateX(0)}
+
+.side-drawer-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 18px;border-bottom:1px solid var(--bd);background:var(--c);
+  flex-shrink:0;
+}
+.side-drawer-title{font-size:18px;font-weight:700;color:var(--t);letter-spacing:-0.01em}
+.side-drawer-close{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);
+  background:var(--c-subtle);color:var(--m);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:15px;font-weight:600;transition:all .15s ease;
+}
+.side-drawer-close:hover{background:var(--bad-bg);color:var(--bad);border-color:var(--bad-bd)}
+
+.side-drawer-body{
+  padding:16px 14px 40px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;
+}
+
+.toast-container{
+  position:fixed;bottom:calc(66px + env(safe-area-inset-bottom,0px));left:50%;
+  transform:translateX(-50%);z-index:9999;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  width:90%;max-width:380px;
+}
+.toast{
+  background:rgba(15,23,42,0.92);color:#fff;padding:10px 16px;border-radius:24px;
+  font-size:13.5px;font-weight:600;display:inline-flex;align-items:center;gap:8px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.28);border:1px solid rgba(255,255,255,0.12);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  animation:toastIn .22s cubic-bezier(0.16,1,0.3,1);
+  pointer-events:auto;text-align:center;
+}
+.toast.toast-out{
+  animation:toastOut .2s cubic-bezier(0.4,0,1,1) forwards;
+}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes toastOut{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(8px) scale(0.96)}}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}
+}
+</style></head><body><div id="toast-container" class="toast-container" aria-live="polite"></div><header id="android-bar" class="app-header"><div class="status-bar"><span class="status-time" id="status-clock">--:--</span><span class="status-icons"><span id="status-net" title="Cellular signal"><svg width="15" height="12" viewBox="0 0 15 12" fill="currentColor"><path d="M0 10h2V7H0v3zm3 0h2V5H3v5zm3 0h2V3H6v7zm3 0h2V1H9v9zm3 0h2V0h-2v10z"/></svg></span><span id="status-wifi" title="Wi-Fi"><svg width="14" height="11" viewBox="0 0 14 11" fill="currentColor"><path d="M7 2.5C9.4 2.5 11.5 3.5 13 5.1L14 3.9C12.2 2 9.8 0.8 7 0.8S1.8 2 0 3.9L1 5.1C2.5 3.5 4.6 2.5 7 2.5zm0 3.8C8.5 6.3 9.8 7 10.8 8.1L12 6.8C10.7 5.4 8.9 4.6 7 4.6S3.3 5.4 2 6.8L3.2 8.1C4.2 7 5.5 6.3 7 6.3zm0 3.8c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5-1.5-.7-1.5-1.5.7-1.5 1.5-1.5z"/></svg></span><span id="status-battery" style="display:inline-flex;align-items:center;gap:3px" title="Battery"><span id="status-bat-pct" style="font-size:10px;font-weight:600;display:none"></span><span id="status-bat-icon"><svg width="20" height="11" viewBox="0 0 20 11" fill="currentColor"><rect x="1" y="1" width="16" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect id="status-bat-level" x="3" y="3" width="12" height="5" rx="1"/><path d="M18 4v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></span></span></div><div class="top-app-bar"><div class="app-title-group"><span class="app-logo-badge" title="INTO Academy"><svg viewBox="0 0 500 190" width="30" height="13" style="display:block"><g><path d="M 26,22 L 53,22 L 26,49 Z" fill="#DE222B"/><path d="M 53,30 L 53,130 L 26,130 L 26,57 Z" fill="#0B3C68"/></g><path d="M 74,22 L 101,22 L 148,93 L 148,22 L 174,22 L 174,130 L 147,130 L 101,59 L 101,130 L 74,130 Z" fill="#0B3C68"/><path d="M 188,22 L 286,22 L 286,48 L 251,48 L 251,130 L 223,130 L 223,48 L 188,48 Z" fill="#0B3C68"/><path fill-rule="evenodd" d="M 342,22 C 314,22 298,38 298,66 L 298,86 C 298,114 314,130 342,130 L 378,130 C 406,130 422,114 422,86 L 422,66 C 422,38 406,22 378,22 Z M 344,48 C 333,48 326,55 326,67 L 326,85 C 326,97 333,104 344,104 L 376,104 C 387,104 394,97 394,85 L 394,67 C 394,55 387,48 376,48 Z" fill="#0B3C68"/><g><rect x="382" y="55" width="70" height="16" fill="#181818"/><rect x="382" y="71" width="70" height="16" fill="#DE222B"/><rect x="382" y="87" width="70" height="16" fill="#FFCC00"/></g><rect x="382" y="55" width="70" height="48" rx="8" fill="none" stroke="#FFFFFF" stroke-width="2.5"/></svg></span><div><div class="app-title">INTO Vokabeltrainer</div><div class="app-subtitle" id="app-sub">Active Recall &amp; Spaced Repetition</div></div></div><button class="menu-dots-btn" id="btn-settings-side" onclick="openSettingsSide()" aria-label="Settings" title="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="19" r="2.2"/></svg></button></div></header><main><div id="v"></div></main><nav id="nav"></nav><dialog id="dlg"></dialog><div id="side-drawer-backdrop" class="drawer-backdrop" onclick="closeSettingsSide()"></div><aside id="side-drawer" class="side-drawer" aria-label="Settings" role="dialog" aria-modal="true"><div class="side-drawer-header"><div class="side-drawer-title">⚙️ Settings</div><button class="side-drawer-close" onclick="closeSettingsSide()" aria-label="Close Settings">✕</button></div><div class="side-drawer-body" id="side-drawer-content"></div></aside><script>
+/* ===== INTO Vokabeltrainer — single-file offline prototype. Sections: DB, model, scheduler, grading, exercises, session, views, import, backup ===== */
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const H=36e5,D=864e5,lc=s=>nz(s).toLowerCase(),nz=s=>String(s||'').trim().replace(/\s+/g,' ').replace(/[.!?;,]+$/,''),split=s=>String(s||'').split(/[;|]/).map(x=>x.trim()).filter(Boolean);
+const shuf=a=>a.map(x=>[Math.random(),x]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+const FIELDS='id level book lesson category topic source_page german english_meanings german_explanation word_type notes example_de example_en article singular plural infinitive present_ich present_du present_er_sie_es present_wir present_ihr present_sie_Sie praeteritum partizip_ii auxiliary reflexive separable_prefix required_preposition required_case accepted_german_answers accepted_english_answers cloze_sentence_de cloze_answer cloze_alternatives grammar_pattern reference_sentence_de reference_sentence_en example_source data_status'.split(' ');
+const ALIAS={deutsch:'german',word:'german',english:'english_meanings',translation:'english_meanings',meaning:'english_meanings',beispiel:'example_de',type:'word_type'};
+const SK={mean:'Meaning',prod:'German production',art:'Article',plu:'Plural',conj:'Conjugation',past:'Past forms',ctx:'Cloze context',pat:'Grammar pattern'};
+const EXN=['Meaning recognition (MC)','German production','Meaning recall','Contextual cloze','Article / plural','Verb conjugation','Past forms','Expression / grammar pattern'];
+const DEF={k:'set',times:['08:00','14:00','20:00'],min:10,newDay:8,notify:false,follow:15,strong:true,off:[],lenient:true,speak:false,sim:0};
+const DEMO=[{id:'demo1',category:'noun',german:'die Erfahrung',english_meanings:'experience',article:'die',singular:'Erfahrung',plural:'Erfahrungen',german_explanation:'Wissen, das man durch Praxis bekommt.',example_de:'Ich habe viel Erfahrung in diesem Beruf.',example_en:'I have a lot of experience in this job.',cloze_sentence_de:'Ich habe viel ___ in diesem Beruf.',cloze_answer:'Erfahrung'},
+{id:'demo2',category:'verb',german:'empfehlen',infinitive:'empfehlen',english_meanings:'to recommend',present_ich:'empfehle',present_du:'empfiehlst',present_er_sie_es:'empfiehlt',present_wir:'empfehlen',present_ihr:'empfehlt',present_sie_Sie:'empfehlen',praeteritum:'empfahl',partizip_ii:'empfohlen',auxiliary:'haben',example_de:'Ich empfehle dir dieses Buch.',example_en:'I recommend this book to you.',cloze_sentence_de:'Er hat mir das Buch ___.',cloze_answer:'empfohlen',reference_sentence_de:'Ich kann dir dieses Buch empfehlen.',reference_sentence_en:'I can recommend this book to you.'},
+{id:'demo3',category:'adj',german:'müde',english_meanings:'tired',example_de:'Ich bin heute sehr müde.',example_en:'I am very tired today.',cloze_sentence_de:'Ich bin heute sehr ___.',cloze_answer:'müde'},
+{id:'demo4',category:'expr',german:'auf jemanden warten',english_meanings:'to wait for someone',required_preposition:'auf',required_case:'Akkusativ',grammar_pattern:'warten auf + Akkusativ',example_de:'Ich warte auf den Bus.',example_en:'I am waiting for the bus.',cloze_sentence_de:'Ich warte ___ den Bus.',cloze_answer:'auf'},
+{id:'demo5',category:'conn',german:'weil',english_meanings:'because',grammar_pattern:'weil → conjugated verb at the end of the clause',example_de:'Ich bleibe zu Hause, weil ich müde bin.',example_en:'I stay home because I am tired.',cloze_sentence_de:'Ich bleibe zu Hause, ___ ich bin.',cloze_answer:'weil'}].map(o=>({...o,level:'Demo',book:'Demo content',lesson:'Demo',demo:'1',data_status:'demo'}));
+/* ---- DB (IndexedDB, one store per entity, keyPath k) ---- */
+let db=null,S={items:[],states:{},logs:[],sessions:[],kv:{},set:{...DEF},im:{}},A=null,P=null,tab='home',F={},IMP=null,sel=null,progDay=null,warn='';
+const store=(n,m)=>db.transaction(n,m).objectStore(n),NAMES=['items','states','logs','sessions','kv'];
+const put=(n,o)=>db?new Promise(r=>{const q=store(n,'readwrite').put(o);q.onsuccess=q.onerror=()=>r()}):0,del=(n,k)=>db?new Promise(r=>{const q=store(n,'readwrite').delete(k);q.onsuccess=q.onerror=()=>r()}):0;
+const putMany=(n,a)=>db?new Promise(r=>{try{if(!a||!a.length)return r();const t=db.transaction(n,'readwrite'),s=t.objectStore(n);a.forEach(o=>s.put(o));t.oncomplete=t.onerror=t.onabort=()=>r()}catch(_){r()}}):0,delMany=(n,keys)=>db?new Promise(r=>{try{if(!keys||!keys.length)return r();const t=db.transaction(n,'readwrite'),s=t.objectStore(n);keys.forEach(k=>s.delete(k));t.oncomplete=t.onerror=t.onabort=()=>r()}catch(_){r()}}):0,clr=n=>db?new Promise(r=>{try{store(n,'readwrite').clear().onsuccess=store(n,'readwrite').clear().onerror=()=>r()}catch(_){r()}}):0,all=n=>new Promise(r=>{try{const q=store(n,'readonly').getAll();q.onsuccess=()=>r(q.result);q.onerror=()=>r([])}catch(_){r([])}});
+async function load(){try{db=await new Promise((r,j)=>{const q=indexedDB.open('gmc',1);q.onupgradeneeded=()=>NAMES.forEach(n=>q.result.createObjectStore(n,{keyPath:'k'}));q.onsuccess=()=>r(q.result);q.onerror=()=>j()})}catch(e){db=null;warn='Storage is unavailable: nothing will be saved after closing the app. Export a JSON backup before leaving.'}
+if(db){S.items=await all('items');(await all('states')).forEach(s=>S.states[s.k]=s);S.logs=await all('logs');S.sessions=await all('sessions');(await all('kv')).forEach(o=>S.kv[o.k]=o);if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}
+S.set={...DEF,...(S.kv.set||{})};A=S.kv.active||null;if(A)A.run=null;reidx();if(window.AndroidBridge&&typeof window.AndroidBridge.setNotificationsEnabled==='function'&&S.set.notify){window.AndroidBridge.setNotificationsEnabled(true,JSON.stringify(S.set.times),S.set.follow)}}
+const reidx=()=>{S.im={};S.items.forEach(i=>S.im[i.id]=i)},saveSet=()=>{S.kv.set=S.set;put('kv',S.set);if(window.AndroidBridge&&typeof window.AndroidBridge.setNotificationsEnabled==='function'){window.AndroidBridge.setNotificationsEnabled(!!S.set.notify,JSON.stringify(S.set.times),S.set.follow)}},now=()=>Date.now()+(S.set.sim||0)*H,dstr=t=>new Date(t).toLocaleDateString('sv'),today=()=>dstr(now()),dayStart=()=>new Date(now()).setHours(0,0,0,0);
+/* ---- Model: skills per item, states, scheduler ---- */
+const has=(...a)=>a.every(x=>x&&String(x).trim()),gname=it=>it.german||it.infinitive||'';
+function skillsFor(it){const s=['mean','prod'],c=it.category;if(c=='noun'){if(it.article)s.push('art');if(it.plural)s.push('plu')}
+if(c=='verb'){if(it.present_ich||it.present_du||it.present_er_sie_es)s.push('conj');if(it.praeteritum||it.partizip_ii)s.push('past')}
+if(has(it.cloze_sentence_de,it.cloze_answer))s.push('ctx');if(has(it.required_preposition))s.push('pat');return s}
+const mkSt=(id,sk,due)=>({k:id+'|'+sk,id,sk,reps:0,iv:0,ef:2.3,ok:0,fail:0,lapse:0,n:0,rec:[],due});
+function ensure(it){if(!it.intro)return;skillsFor(it).forEach(sk=>{const k=it.id+'|'+sk;if(!S.states[k]){S.states[k]=mkSt(it.id,sk,now());put('states',S.states[k])}})}
+/* SM-2-inspired: q>=3 grows interval (1d,3d,then *ef); MC (weak evidence) never grows beyond 3d; partial -> tomorrow, interval halved; fail -> lapse, retry in 3h (later session, not immediate) */
+function sched(st,q,mc){const n=now();st.n++;st.last=n;st.rec=[...st.rec,q].slice(-8);
+if(q>=3){st.ok++;if(mc){if(!st.reps){st.reps=1;st.iv=1}st.due=n+Math.min(Math.max(st.iv,1),3)*D}else{st.reps++;st.iv=st.reps==1?1:st.reps==2?3:Math.round(st.iv*st.ef);st.ef=Math.min(2.8,st.ef+.05);st.due=n+st.iv*D}}
+else if(q==2){st.iv=Math.max(1,Math.round(st.iv/2));st.ef=Math.max(1.3,st.ef-.15);st.due=n+D}
+else{st.fail++;if(st.reps>0)st.lapse++;st.reps=0;st.iv=0;st.ef=Math.max(1.3,st.ef-.2);st.due=n+3*H}}
+const stLabel=s=>!s||!s.n?'New':s.iv>=21?'Mature':s.reps>=2?'Review':'Learning';
+function itStatus(it){if(!it.intro)return'New';const l=skillsFor(it).map(k=>S.states[it.id+'|'+k]).filter(Boolean).map(stLabel);return l.includes('Learning')||l.includes('New')?'Learning':l.includes('Review')?'Review':'Mature'}
+function dueList(ids,prac){const n=now();return Object.values(S.states).filter(s=>(prac||s.due<=n)&&(!ids||ids.has(s.id))&&S.im[s.id]&&skillsFor(S.im[s.id]).includes(s.sk)).sort((a,b)=>a.due-b.due)}
+const weak=it=>skillsFor(it).some(k=>{const s=S.states[it.id+'|'+k];return s&&(s.lapse>=2||s.fail>=3)});
+const incomplete=it=>!it.english_meanings||(it.category=='noun'&&!(it.article&&it.plural))||(it.category=='verb'&&!(it.praeteritum&&it.partizip_ii))||!it.example_de;
+/* ---- Grading (single reusable function) ---- */
+function lev(a,b){const m=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){let p=m[0];m[0]=i;for(let j=1;j<=b.length;j++){const t=m[j];m[j]=Math.min(m[j]+1,m[j-1]+1,p+(a[i-1]==b[j-1]?0:1));p=t}}return m[b.length]}
+/* results: correct | norm (case/spacing only) | partial | incorrect | review (needs self-assessment). Missing umlauts are never silently accepted: they give 'partial'. */
+function grade(ex,raw){const r=nz(raw);if(!r)return'empty';if(ex.t==1)return raw==ex.ans[0]?'correct':'incorrect';
+if(ex.ans.some(a=>nz(a)==r))return'correct';if(ex.ans.some(a=>lc(a)==lc(r)))return'norm';
+if(ex.sing){const w=r.split(' ');if(w.length==2&&lc(w[1])==lc(ex.sing))return'partial';}
+if(S.set.lenient&&ex.ans.some(a=>a.length>=5&&lev(lc(a),lc(r))==1))return'partial';return'incorrect'}
+/* ---- Exercise generation: returns null when data is missing (never invents content) ---- */
+function distract(it){const own=split(it.english_meanings).map(lc);return[...new Set(shuf(S.items.filter(o=>o.id!=it.id)).sort((a,b)=>(b.category==it.category)-(a.category==it.category)).map(o=>split(o.english_meanings)[0]).filter(x=>x&&!own.includes(lc(x))))]}
+function gen(it,k,st){const ok=t=>!S.set.off.includes(t-1),g=gname(it),en=split(it.english_meanings),pr={ich:'present_ich',du:'present_du','er/sie/es':'present_er_sie_es',wir:'present_wir',ihr:'present_ihr','sie/Sie':'present_sie_Sie'};
+if(k=='mean'){if(!en.length)return null;const d=distract(it);if(ok(1)&&d.length>=3&&(st.reps<2||!ok(3)))return{t:1,sk:k,q:'What does this mean?',w:g,opts:shuf([en[0],...d.slice(0,3)]),ans:[en[0]]};
+return ok(3)?{t:3,sk:k,q:'Type the English meaning',w:g,ans:[...en,...split(it.accepted_english_answers),...en.map(e=>e.replace(/^to /,''))]}:null}
+if(k=='prod'){if(!ok(2)||!en.length)return null;const sg=it.singular||'';return{t:2,sk:k,q:'Type the German word or expression',w:en.join(' / '),ans:[...new Set([g,sg,...split(it.accepted_german_answers)].filter(Boolean))],sing:it.category=='noun'?sg:''}}
+if(k=='art'&&ok(5))return{t:5,sk:k,q:'What is the article of "'+(it.singular||g.replace(/^(der|die|das) /,''))+'"?',ans:[it.article]};
+if(k=='plu'&&ok(5)){const s=it.singular||g.replace(/^(der|die|das) /,'');return{t:5,sk:k,q:'Type the plural of "'+s+'"',ans:[it.plural,'die '+it.plural]}}
+if(k=='conj'&&ok(6)){const f=shuf(Object.entries(pr).filter(([p,c])=>it[c])),[p,c]=f[0];return{t:6,sk:k,q:'Präsens · '+(it.infinitive||g)+' · '+p,ans:[it[c],p+' '+it[c]]}}
+if(k=='past'&&ok(7)){const o=[];if(it.praeteritum)o.push(['Präteritum (er/sie/es) of '+g,[it.praeteritum,'er '+it.praeteritum]]);if(it.partizip_ii){o.push(['Partizip II of '+g,[it.partizip_ii]]);if(it.auxiliary)o.push(['Perfekt (er/sie/es) of '+g,[it.auxiliary=='sein'?'ist':'hat',].map(a=>a+' '+it.partizip_ii).flatMap(x=>[x,'er '+x])])}const[q,a]=shuf(o)[0];return{t:7,sk:k,q,ans:a}}
+if(k=='ctx'&&ok(4))return{t:4,sk:k,q:'Fill the gap',w:it.cloze_sentence_de,ans:[it.cloze_answer,...split(it.cloze_alternatives)]};
+if(k=='pat'&&ok(8))return{t:8,sk:k,q:'Which preposition belongs to "'+g+'"?',w:it.grammar_pattern?'':'',ans:[it.required_preposition]};
+return null}
+/* ---- Session engine ---- */
+const elapsed=()=>A?A.ms+(A.run?Date.now()-A.run:0):0,save=()=>{put('kv',A);render()};
+function newLimit(){if(A.ids)return Math.max(0,S.set.newDay-A.nw);const t=today(),done=S.items.filter(i=>i.intro&&dstr(i.intro)==t).length,back=dueList().length;if(back>40)return 0;return Math.max(0,Math.min(S.set.newDay-done,([4,3,1][A.slot]??2)-A.nw))}
+function startS(slot,ids,label){if(A)return resumeS();A={k:'active',id:'s'+Date.now(),slot,date:today(),ms:0,run:Date.now(),done:[],hist:[],nw:0,c:0,p:0,i:0,fails:{},ids:ids||null,cur:null,label:label||''};tab='train';adv()}
+function resumeS(){tab='train';if(!A)return;if(!A.hist)A.hist=[];A.run=Date.now();if(A.cur&&A.cur.sk=='sent')A.cur=null;if(A.cur){P={ph:'ask',ex:A.cur,it:S.im[A.cur.k.split('|')[0]],t0:Date.now(),draft:A.draft||''};save()}else if(A.introId&&S.im[A.introId]){P={ph:'intro',it:S.im[A.introId]};save()}else adv()}
+function pauseS(){if(A&&A.run){A.ms+=Date.now()-A.run;A.run=null;if(P&&P.ph=='ask')A.draft=P.draft||'';put('kv',A)}}
+function adv(){A.cur=null;if(elapsed()>=S.set.min*6e4)return fin();const ids=A.ids?new Set(A.ids):null;let q=dueList(ids,!!ids).filter(s=>!A.done.includes(s.k));
+if(A.slot==1)q.sort((a,b)=>(['conj','art','plu','past','pat'].includes(a.sk)?0:1)-(['conj','art','plu','past','pat'].includes(b.sk)?0:1));if(A.slot==2)q=shuf(q);
+while(q.length){const s=q.shift(),ex=gen(S.im[s.id],s.sk,s);if(ex){ex.k=s.k;A.cur=ex;P={ph:'ask',ex,it:S.im[s.id],t0:Date.now()};sel=null;return save()}A.done.push(s.k)}
+if(newLimit()>0){const it=S.items.find(i=>!i.intro&&(!ids||ids.has(i.id)));if(it){A.introId=it.id;P={ph:'intro',it};return save()}}fin()}
+function introduce(id){
+  const it=(id&&S.im[id])||(P&&P.it)||(A&&A.introId&&S.im[A.introId])||(A&&A.cur&&S.im[A.cur.k.split('|')[0]]);
+  if(!it){if(A)return adv();return}
+  if(A&&!A.run)A.run=Date.now();
+  it.intro=now();put('items',it);
+  skillsFor(it).forEach(sk=>{const k=it.id+'|'+sk;S.states[k]=mkSt(it.id,sk,now()+(sk=='mean'?0:3*H));put('states',S.states[k])});
+  if(A){A.nw++;A.introId=null}
+  const st=S.states[it.id+'|mean'];let ex=gen(it,'mean',st);
+  if(!ex){for(const sk of skillsFor(it)){const testSt=S.states[it.id+'|'+sk]||mkSt(it.id,sk,now());ex=gen(it,sk,testSt);if(ex)break}}
+  if(!ex){if(A)return adv();return}
+  ex.k=(st&&st.k)||(it.id+'|'+ex.sk);if(A)A.cur=ex;P={ph:'ask',ex,it,t0:Date.now()};sel=null;save()
+}
+function submit(){const raw=P.ex.t==1?sel:$('#ans')?.value;if(!nz(raw||''))return;const g=grade(P.ex,raw);P.raw=raw;P.ms=Date.now()-P.t0;if(g=='review'){P.ph='fb';P.pend=1;render()}else rec(g,0)}
+function rec(gc,self){const{ex,it}=P,st=S.states[ex.k];
+const prevSt=JSON.parse(JSON.stringify(st));
+sched(st,gc=='partial'?2:gc=='incorrect'?0:ex.t==1?3:4,ex.t==1);
+const lg={k:Date.now()+'-'+Math.random().toString(36).slice(2,6),t:now(),id:it.id,sk:ex.sk,ty:ex.t,a:P.raw,e:ex.ans.join(' / '),g:gc,ms:P.ms,nm:gc=='norm',self:!!self};
+S.logs.push(lg);put('logs',lg);put('states',st);
+if(!A.hist)A.hist=[];
+A.hist.push({ex,it,prevSt,lgK:lg.k,gc,raw:P.raw,draft:P.draft||'',t0:P.t0});
+A.done.push(ex.k);A[gc=='partial'?'p':gc=='incorrect'?'i':'c']++;if(gc=='incorrect')A.fails[ex.sk]=(A.fails[ex.sk]||0)+1;A.cur=null;P.ph='fb';P.gc=gc;P.pend=0;save()}
+function goBack(){
+  if(P&&P.ph=='fb'&&!P.pend){
+    if(A&&A.hist&&A.hist.length){
+      const last=A.hist.pop();
+      S.states[last.ex.k]=last.prevSt;put('states',last.prevSt);
+      const lIdx=S.logs.findIndex(l=>l.k===last.lgK);
+      if(lIdx>=0){S.logs.splice(lIdx,1);del('logs',last.lgK)}
+      const dIdx=A.done.lastIndexOf(last.ex.k);
+      if(dIdx>=0)A.done.splice(dIdx,1);
+      if(last.gc=='correct'||last.gc=='norm')A.c=Math.max(0,A.c-1);
+      else if(last.gc=='partial')A.p=Math.max(0,A.p-1);
+      else if(last.gc=='incorrect'){A.i=Math.max(0,A.i-1);if(A.fails[last.ex.sk]){A.fails[last.ex.sk]--;if(A.fails[last.ex.sk]<=0)delete A.fails[last.ex.sk]}}
+      A.cur=last.ex;
+      P={ph:'ask',ex:last.ex,it:last.it,t0:Date.now(),draft:last.raw||last.draft||''};
+      sel=last.ex.t==1?last.raw:null;
+      return save();
+    }
+  }
+  if(!A||!A.hist||!A.hist.length)return;
+  const last=A.hist.pop();
+  S.states[last.ex.k]=last.prevSt;put('states',last.prevSt);
+  const lIdx=S.logs.findIndex(l=>l.k===last.lgK);
+  if(lIdx>=0){S.logs.splice(lIdx,1);del('logs',last.lgK)}
+  const dIdx=A.done.lastIndexOf(last.ex.k);
+  if(dIdx>=0)A.done.splice(dIdx,1);
+  if(last.gc=='correct'||last.gc=='norm')A.c=Math.max(0,A.c-1);
+  else if(last.gc=='partial')A.p=Math.max(0,A.p-1);
+  else if(last.gc=='incorrect'){A.i=Math.max(0,A.i-1);if(A.fails[last.ex.sk]){A.fails[last.ex.sk]--;if(A.fails[last.ex.sk]<=0)delete A.fails[last.ex.sk]}}
+  A.cur=last.ex;
+  P={ph:'ask',ex:last.ex,it:last.it,t0:Date.now(),draft:last.raw||last.draft||''};
+  sel=last.ex.t==1?last.raw:null;
+  save();
+}
+function fin(){const secs=Math.round(elapsed()/1e3),r={k:A.id,date:A.date,slot:A.slot,label:A.label||'',t:now(),secs,c:A.c,p:A.p,i:A.i,nw:A.nw,fails:A.fails,done:1};
+if(r.c+r.p+r.i+r.nw>0){S.sessions.push(r);put('sessions',r)}else r.empty=1;del('kv','active');A=null;S.kv.active=null;P={ph:'sum',r};render()}
+/* ---- Schedule status ---- */
+const slotMs=(d,t)=>{const[h,m]=t.split(':');return new Date(d+'T'+h.padStart(2,'0')+':'+m+':00').getTime()};
+function slotStatus(i){const d=today(),n=now(),t=slotMs(d,S.set.times[i]),nx=S.set.times[i+1]?slotMs(d,S.set.times[i+1]):slotMs(d,'23:59');if(S.sessions.some(s=>s.date==d&&s.slot==i))return'Completed';if(A&&A.slot==i&&A.date==d)return'In progress';return n<t?'Upcoming':n>=nx?'Missed':'Due now'}
+function streak(){const ds=new Set(S.sessions.map(s=>s.date));let n=0,t=now();if(!ds.has(dstr(t)))t-=D;while(ds.has(dstr(t))){n++;t-=D}return n}
+const studySecs=d=>S.sessions.filter(s=>s.date==d).reduce((a,s)=>a+s.secs,0)+(A&&A.date==d?Math.round(elapsed()/1e3):0);
+/* ---- Views ---- */
+const TABS=[['home','Today'],['lib','Library'],['train','Training'],['prog','Progress'],['imp','Import']];
+const TAB_ICONS={
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+  lib:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+  train:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+  prog:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+  imp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'
+};
+const SUB={home:'Today’s Overview',lib:'Vocabulary Library',train:'Active Training',prog:'Retention & Mastery',imp:'Import CSV'};
+function updPhoneStatus(){
+  const clk=$('#status-clock');
+  if(clk){
+    const d=new Date();
+    clk.textContent=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false});
+  }
+  const wifiIcon=$('#status-wifi');
+  if(wifiIcon){
+    wifiIcon.style.opacity=navigator.onLine===false?'0.35':'1';
+    wifiIcon.title=navigator.onLine===false?'Offline':'Connected';
+  }
+}
+async function initBatteryStatus(){
+  if('getBattery' in navigator){
+    try{
+      const bat=await navigator.getBattery();
+      const updateBat=()=>{
+        const pct=Math.round(bat.level*100);
+        const lvlRect=$('#status-bat-level');
+        const batEl=$('#status-battery');
+        if(lvlRect){
+          lvlRect.setAttribute('width',Math.max(2,Math.round(12*(pct/100))));
+          if(pct<=15)lvlRect.setAttribute('fill','var(--bad)');
+          else if(pct<=30)lvlRect.setAttribute('fill','var(--w)');
+          else lvlRect.removeAttribute('fill');
+        }
+        if(batEl)batEl.title=`Battery: ${pct}%${bat.charging?' (charging)':''}`;
+      };
+      updateBat();
+      bat.addEventListener('levelchange',updateBat);
+      bat.addEventListener('chargingchange',updateBat);
+    }catch(e){}
+  }
+}
+setInterval(updPhoneStatus,1000);
+updPhoneStatus();
+initBatteryStatus();
+window.addEventListener('online',updPhoneStatus);
+window.addEventListener('offline',updPhoneStatus);
+function go(t){if(t=='set'){openSettingsSide();return}if(t!='train'&&A&&A.run)pauseS();tab=t;const v=$('#v');v.classList.add('an');setTimeout(()=>v.classList.remove('an'),400);render()}
+const INTO_LOGO_SVG=`<svg viewBox="0 0 500 190" class="into-main-logo" role="img" aria-label="INTO Academy"><defs><clipPath id="gf"><rect x="382" y="55" width="70" height="48" rx="8" ry="8"/></clipPath></defs><g><path d="M 26,22 L 53,22 L 26,49 Z" fill="#DE222B"/><path d="M 53,30 L 53,130 L 26,130 L 26,57 Z" fill="#0B3C68"/></g><path d="M 74,22 L 101,22 L 148,93 L 148,22 L 174,22 L 174,130 L 147,130 L 101,59 L 101,130 L 74,130 Z" fill="#0B3C68"/><path d="M 188,22 L 286,22 L 286,48 L 251,48 L 251,130 L 223,130 L 223,48 L 188,48 Z" fill="#0B3C68"/><path fill-rule="evenodd" d="M 342,22 C 314,22 298,38 298,66 L 298,86 C 298,114 314,130 342,130 L 378,130 C 406,130 422,114 422,86 L 422,66 C 422,38 406,22 378,22 Z M 344,48 C 333,48 326,55 326,67 L 326,85 C 326,97 333,104 344,104 L 376,104 C 387,104 394,97 394,85 L 394,67 C 394,55 387,48 376,48 Z" fill="#0B3C68"/><g clip-path="url(#gf)"><rect x="382" y="55" width="70" height="16" fill="#181818"/><rect x="382" y="71" width="70" height="16" fill="#DE222B"/><rect x="382" y="87" width="70" height="16" fill="#FFCC00"/></g><rect x="382" y="55" width="70" height="48" rx="8" fill="none" stroke="#FFFFFF" stroke-width="2.5"/><text x="245" y="172" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="28" letter-spacing="16" fill="#DE222B">ACADEMY</text></svg>`;
+function render(){$('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k==tab?'on':''}" onclick="go('${k}')">${TAB_ICONS[k]||''}<span>${l}</span></button>`).join('');
+const subEl=$('#app-sub');if(subEl)subEl.textContent=SUB[tab]||'INTO Vokabeltrainer';
+const sim=S.set.sim?`<div class="ban">TEST MODE: time is simulated (+${S.set.sim} h). Change it in Settings.</div>`:'';$('#v').innerHTML=(warn?`<div class="ban">${esc(warn)}</div>`:'')+sim+({home:vHome,lib:vLib,train:vTrain,prog:vProg,imp:vImp,set:()=>{openSettingsSide();return vHome()}}[tab]||vHome)();if(tab=='lib')libList();const a=$('#ans');if(a)a.focus()}
+function vHome(){
+  if(!S.items.length)return`<h1>Today</h1><div class="card"><p>INTO Vocabulary Trainer trains vocabulary with active recall and spaced repetition. All data stays local on this device.</p><p>You can test the app right away by loading 5 demo vocabulary words or import your own CSV vocabulary list.</p><div class="btn-grid-2" style="margin-top:14px"><button class="b" onclick="demo()">Load Demo Data</button><button class="b s" onclick="go('imp')">Import CSV</button></div></div>`;
+  const d=today(),tgt=S.set.times.length*S.set.min,done=Math.round(studySecs(d)/60);
+  const sk={};Object.values(S.states).forEach(s=>{if(s.fail&&SK[s.sk])sk[s.sk]=(sk[s.sk]||0)+s.fail});const wk=Object.entries(sk).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k])=>SK[k]).join(', ');
+  return`<h1>Today</h1><div class="card" style="display:flex;align-items:center;gap:16px"><svg width="96" height="96" viewBox="0 0 100 100" role="img" aria-label="Minutes studied today"><circle cx="50" cy="50" r="40" fill="none" stroke="var(--bd)" stroke-width="10"/><circle class="ring" cx="50" cy="50" r="40" fill="none" stroke="var(--a)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${Math.min(1,tgt?done/tgt:0)*251.3} 251.3" transform="rotate(-90 50 50)"/></svg><div><div class="big2">${done}/${tgt} min</div><div class="m">studied today · ${streak()} day streak</div></div></div>
+<div class="card"><h2>Sessions</h2>${S.set.times.map((t,i)=>{const s=slotStatus(i);const pillCls=s=='Completed'?'ok':s=='Missed'?'bad':s=='Due now'?'due-now':s=='In progress'?'in-prog':'';return`<div class="row" style="display:flex;justify-content:space-between;align-items:center;cursor:default"><div><div><b>${t}</b> · ${['Learn &amp; retrieve','Reinforce','Mixed retention','Extra'][i]||'Extra'}</div><div style="margin-top:4px"><span class="pill ${pillCls}">${s}</span></div></div><div>${s=='Completed'?'':s=='In progress'?`<button class="b" style="min-width:96px;margin:0" onclick="resumeS()">Resume</button>`:`<button class="b ${s=='Missed'?'s':''}" style="min-width:96px;margin:0" onclick="startS(${i})">Start</button>`}</div></div>`}).join('')}</div>
+${wk?`<div class="card"><h2>Needs attention</h2><p>Skills with the most mistakes: ${wk}</p></div>`:''}`}
+function demo(){S.items=DEMO.map(o=>({...o,k:o.id}));reidx();putMany('items',S.items);S.kv.onboarded={k:'onboarded'};put('kv',S.kv.onboarded);render()}
+const FL={book:'All books',level:'All levels',lesson:'All lessons',category:'All categories',topic:'All topics'};
+const opts=k=>`<option value="">${FL[k]}</option>`+[...new Set(S.items.map(i=>i[k]).filter(Boolean))].sort().map(v=>`<option value="${esc(v)}" ${F[k]==v?'selected':''}>${esc(v)}</option>`).join('');
+const hasF=()=>!!((F.q&&F.q.trim())||Object.keys(FL).some(k=>F[k]));
+function clearF(){F={};render()}
+function vLib(){return`<h1>Vocabulary library</h1><div class="card"><input id="q" placeholder="Search German, English, notes…" value="${esc(F.q||'')}" oninput="F.q=this.value;libList()" style="width:100%"><div class="fg">${Object.keys(FL).map(k=>`<select onchange="F['${k}']=this.value;libList()">${opts(k)}</select>`).join('')}</div><div class="lh"><span id="cnt"></span> <a href="#" id="clr" class="lk" onclick="clearF();return false" style="display:${hasF()?'inline':'none'}">Clear filters</a></div><div class="act"><button class="b" onclick="edit()">Add word</button><button class="b s" onclick="studyF()">Study these</button><button class="b s" onclick="expCSV()">Export CSV</button></div></div><div class="card" id="list"></div>`}
+function filt(){const q=lc(F.q||'');return S.items.filter(it=>(!q||[gname(it),it.english_meanings,it.notes,it.german_explanation,it.topic].some(x=>lc(x).includes(q)))&&Object.keys(FL).every(k=>!F[k]||it[k]==F[k]))}
+function libList(){const r=filt(),el=$('#list'),c=$('#clr');if(c)c.style.display=hasF()?'inline':'none';if(!el)return;$('#cnt').textContent=r.length+' of '+S.items.length+' items';el.innerHTML=r.slice(0,200).map(it=>`<div class="row" style="cursor:default"><b>${esc(gname(it))}</b> — ${esc(it.english_meanings)} <span class="pill">${itStatus(it)}</span>${it.demo?'<span class="pill">demo</span>':''}${incomplete(it)?'<span class="pill w">incomplete</span>':''}<div class="m">${esc([it.book,it.level,it.lesson,it.category].filter(Boolean).join(' › '))}${it.plural?' · pl. '+esc(it.plural):''}</div></div>`).join('')||'<p class="m">No matching vocabulary. Import a CSV or add a word.</p>'}
+function studyF(){const r=filt();if(!r.length)return alert('No items match the filters.');if(A)return resumeS();startS(-1,r.map(i=>i.id),'Library selection')}
+let isDlgClosing=false;
+function closeDlg(cb){
+  const d=$('#dlg');
+  if(!d||!d.open){if(cb)cb();return}
+  if(isDlgClosing){if(cb)cb();return}
+  isDlgClosing=true;
+  d.classList.add('closing');
+  let done=false;
+  const finish=()=>{
+    if(done)return;
+    done=true;
+    d.removeEventListener('animationend',finish);
+    d.classList.remove('closing');
+    d.style.transform='';
+    d.style.transition='';
+    try{d.close()}catch(_){}
+    isDlgClosing=false;
+    if(cb)cb();
+  };
+  d.addEventListener('animationend',finish,{once:true});
+  setTimeout(finish,220);
+}
+
+function openDlg(html){
+  const d=$('#dlg');
+  if(!d)return;
+  initDlgInteractions();
+  isDlgClosing=false;
+  d.classList.remove('closing');
+  d.style.transform='';
+  d.style.transition='';
+  d.scrollTop=0;
+  if(!html.includes('dlg-drag-bar')){
+    html=`<div class="dlg-drag-bar" onclick="if(!window._dlgDragged)closeDlg()" role="button" aria-label="Drop down to close"><div class="dlg-handle"></div></div>`+html;
+  }
+  d.innerHTML=html;
+  if(!d.open)d.showModal();
+}
+
+function initDlgInteractions(){
+  const d=$('#dlg');
+  if(!d||d._inited)return;
+  d._inited=true;
+
+  let startY=0,startX=0,currentY=0,startTime=0;
+  let isDragging=false,canDrag=false;
+
+  d.addEventListener('touchstart',e=>{
+    if(!d.open||isDlgClosing)return;
+    const t=e.touches[0];
+    startY=t.clientY;
+    startX=t.clientX;
+    currentY=startY;
+    startTime=Date.now();
+    isDragging=false;
+    window._dlgDragged=false;
+    const target=e.target;
+    const isHandle=target.closest&&target.closest('.dlg-drag-bar');
+    const isInput=target.matches&&target.matches('input, textarea, select, button, a');
+    if(isHandle||(d.scrollTop<=0&&!isInput)){
+      canDrag=true;
+    }else{
+      canDrag=false;
+    }
+  },{passive:true});
+
+  d.addEventListener('touchmove',e=>{
+    if(!canDrag||!d.open||isDlgClosing)return;
+    const t=e.touches[0];
+    const dy=t.clientY-startY;
+    const dx=t.clientX-startX;
+    if(!isDragging){
+      if(dy>6&&Math.abs(dy)>Math.abs(dx)){
+        if(d.scrollTop<=0||(e.target.closest&&e.target.closest('.dlg-drag-bar'))){
+          isDragging=true;
+          window._dlgDragged=true;
+        }else{
+          canDrag=false;
+          return;
+        }
+      }else if(dy<-4){
+        canDrag=false;
+        return;
+      }
+    }
+    if(isDragging&&dy>0){
+      if(e.cancelable)e.preventDefault();
+      currentY=t.clientY;
+      d.style.transition='none';
+      d.style.transform=`translateY(${dy}px)`;
+    }
+  },{passive:false});
+
+  const onDragEnd=()=>{
+    if(!canDrag)return;
+    if(isDragging){
+      const dy=currentY-startY;
+      const dt=Math.max(1,Date.now()-startTime);
+      const vel=dy/dt;
+      if(dy>60||(vel>0.35&&dy>20)){
+        d.style.transition='transform 0.2s cubic-bezier(0.4, 0, 1, 1)';
+        d.style.transform='translateY(105%)';
+        setTimeout(()=>closeDlg(),180);
+      }else{
+        d.style.transition='transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)';
+        d.style.transform='translateY(0)';
+        setTimeout(()=>{
+          if(d.open&&!isDlgClosing){
+            d.style.transform='';
+            d.style.transition='';
+          }
+        },210);
+      }
+      setTimeout(()=>{window._dlgDragged=false;},150);
+    }
+    isDragging=false;
+    canDrag=false;
+  };
+
+  d.addEventListener('touchend',onDragEnd,{passive:true});
+  d.addEventListener('touchcancel',()=>{
+    if(isDragging){
+      d.style.transition='transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)';
+      d.style.transform='translateY(0)';
+      setTimeout(()=>{d.style.transform='';d.style.transition='';},210);
+    }
+    isDragging=false;
+    canDrag=false;
+    window._dlgDragged=false;
+  },{passive:true});
+
+  d.addEventListener('mousedown',e=>{
+    if(!d.open||isDlgClosing)return;
+    const isHandle=e.target.closest&&(e.target.closest('.dlg-drag-bar')||e.target.closest('.dlg-handle'));
+    if(!isHandle)return;
+    startY=e.clientY;
+    currentY=startY;
+    startTime=Date.now();
+    isDragging=false;
+    window._dlgDragged=false;
+    const onMouseMove=me=>{
+      const dy=me.clientY-startY;
+      if(!isDragging&&dy>5){
+        isDragging=true;
+        window._dlgDragged=true;
+      }
+      if(isDragging&&dy>0){
+        currentY=me.clientY;
+        d.style.transition='none';
+        d.style.transform=`translateY(${dy}px)`;
+      }
+    };
+    const onMouseUp=()=>{
+      window.removeEventListener('mousemove',onMouseMove);
+      window.removeEventListener('mouseup',onMouseUp);
+      if(isDragging){
+        const dy=currentY-startY;
+        if(dy>60){
+          d.style.transition='transform 0.2s cubic-bezier(0.4, 0, 1, 1)';
+          d.style.transform='translateY(105%)';
+          setTimeout(()=>closeDlg(),180);
+        }else{
+          d.style.transition='transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)';
+          d.style.transform='translateY(0)';
+          setTimeout(()=>{
+            if(d.open&&!isDlgClosing){
+              d.style.transform='';
+              d.style.transition='';
+            }
+          },210);
+        }
+        setTimeout(()=>{window._dlgDragged=false;},150);
+      }
+      isDragging=false;
+    };
+    window.addEventListener('mousemove',onMouseMove);
+    window.addEventListener('mouseup',onMouseUp);
+  });
+
+  d.addEventListener('click',e=>{
+    if(e.target===d){
+      const r=d.getBoundingClientRect();
+      const inBox=(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom);
+      if(!inBox)closeDlg();
+    }
+  });
+
+  d.addEventListener('cancel',e=>{
+    e.preventDefault();
+    closeDlg();
+  });
+}
+
+function edit(id){
+  const it=id?S.im[id]:{},ls=id?Object.values(S.states).filter(s=>s.id==id&&SK[s.sk]):[];
+  openDlg(`<div class="dlg-drag-bar" onclick="if(!window._dlgDragged)closeDlg()" role="button" aria-label="Drop down to close"><div class="dlg-handle"></div></div>
+<h2>${id?esc(gname(it)):'New word'}</h2>
+${['category'].map(()=>`<label>category (noun, verb, adj, expr, conn)</label><input id="f_category" value="${esc(it.category)}">`).join('')}${FIELDS.filter(f=>f!='category'&&f!='id').map(f=>`<label>${f}</label><input id="f_${f}" value="${esc(it[f])}">`).join('')}
+${ls.length?`<h2 style="margin-top:14px">Skills</h2><div class="table-wrap"><table><tr><th>Skill</th><th>Status</th><th class="tc">OK/Fail</th><th class="tr">Next due</th></tr>${ls.map(s=>`<tr><td>${SK[s.sk]}</td><td>${stLabel(s)}</td><td class="tc tbl-num">${s.ok}/${s.fail}</td><td class="tr">${s.n?new Date(s.due).toLocaleString():'—'}</td></tr>`).join('')}</table></div><p class="m">${S.logs.filter(l=>l.id==id).length} reviews logged.</p>`:''}
+<p style="margin-top:14px;display:flex;gap:8px"><button class="b" style="flex:1" onclick="saveIt('${id||''}')">Save</button><button class="b s" style="flex:1" onclick="closeDlg()">Cancel</button>${id?`<button class="b d" onclick="delIt('${id}')">Delete</button>`:''}</p>`);
+}
+function saveIt(id){const o=id?S.im[id]:{intro:0};FIELDS.forEach(f=>{if(f!='id')o[f]=($('#f_'+f).value||'').trim()});if(!gname(o))return alert('German word or infinitive is required.');if(!o.german)o.german=o.infinitive;
+if(!id){o.id='u'+Date.now().toString(36);S.items.push(o)}o.k=o.id;reidx();put('items',o);ensure(o);closeDlg(render)}
+function delIt(id){if(!confirm('Delete this word and its review states? Review logs are kept in backups only if you export first.'))return;S.items=S.items.filter(i=>i.id!=id);Object.keys(S.states).filter(k=>k.startsWith(id+'|')).forEach(k=>{delete S.states[k];del('states',k)});del('items',id);reidx();closeDlg(render)}
+function promptEnd(){
+  if(!A)return;
+  openDlg(`<div class="dlg-drag-bar" onclick="if(!window._dlgDragged)closeDlg()" role="button" aria-label="Drop down to close"><div class="dlg-handle"></div></div>
+<h2>End Training Session?</h2>
+<p class="m">Your completed exercises and stats (${A.c+A.p+A.i} done) will be saved to your daily progress and review history.</p>
+<p style="margin-top:16px;display:flex;gap:8px">
+  <button class="b" style="flex:1" onclick="closeDlg(fin)">Yes, End Session</button>
+  <button class="b s" style="flex:1" onclick="closeDlg()">Continue Testing</button>
+</p>`);
+}
+function promptAbandon(){
+  if(!A){abandon();return}
+  openDlg(`<div class="dlg-drag-bar" onclick="if(!window._dlgDragged)closeDlg()" role="button" aria-label="Drop down to close"><div class="dlg-handle"></div></div>
+<h2>Abandon Interrupted Session?</h2>
+<p class="m">Answers already submitted stay saved in your history, but this session will not count as completed for your schedule.</p>
+<p style="margin-top:16px;display:flex;gap:8px">
+  <button class="b d" style="flex:1" onclick="closeDlg(()=>{del('kv','active');S.kv.active=null;A=null;P=null;render()})">Abandon</button>
+  <button class="b s" style="flex:1" onclick="closeDlg()">Keep Session</button>
+</p>`);
+}
+function vTrain(){
+if(P&&P.ph=='sum'){const r=P.r;return`<h1>Session summary</h1><div class="card">${r.empty?'<p>Nothing was due, so no session was recorded and your streak is unchanged. Try again after reviews are due, or import more vocabulary.</p>':`<p>Time: ${Math.round(r.secs/60*10)/10} min · Exercises: ${r.c+r.p+r.i} · Correct ${r.c} · Partial ${r.p} · Incorrect ${r.i} · New words ${r.nw}</p>${Object.keys(r.fails).length?`<p>Needs work: ${Object.keys(r.fails).map(k=>SK[k]).join(', ')}</p>`:''}`}<p class="m">Next planned: ${nextPlan()}</p><div style="margin-top:14px"><button class="b" style="width:100%;margin:0" onclick="P=null;go('home')">Done</button></div></div>`}
+if(!A||!A.run)return vLand();const mm=elapsed(),left=Math.max(0,S.set.min*6e4-mm);
+const canBack=!!((P&&P.ph=='fb'&&!P.pend)||(A&&A.hist&&A.hist.length>0));
+const hdr=`<div class="m" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px"><span>Time left <b id="tm">${fmt(left)}</b> · ${A.c+A.p+A.i} done</span><span style="display:inline-flex;align-items:center;gap:6px"><button class="b s" style="padding:6px 14px;min-height:36px;font-size:13px;margin:0" onclick="pauseS();render()">Pause</button><button class="b s" style="padding:6px 14px;min-height:36px;font-size:13px;margin:0" onclick="promptEnd()">End</button></span></div><div class="pb"><i id="pbi" style="width:${Math.min(100,Math.round(mm/(S.set.min*600)))}%"></i></div>${left?'':'<div class="ban">Time is up. Finish this question, then the session ends.</div>'}`;
+if(!A.run)return`<h1>Training</h1><div class="card"><p>Session paused.</p><div style="margin-top:14px"><button class="b" style="width:100%;margin:0" onclick="resumeS()">Resume</button></div></div>`;
+if(!P){
+  if(A.introId&&S.im[A.introId]){P={ph:'intro',it:S.im[A.introId]};}
+  else if(A.cur&&S.im[A.cur.k.split('|')[0]]){P={ph:'ask',ex:A.cur,it:S.im[A.cur.k.split('|')[0]],t0:Date.now()};}
+  else{adv();return''}
+}
+if(P.ph=='intro'){const it=P.it;return`<h1>New word</h1>${hdr}<div class="card"><div class="big2">${esc(gname(it))}</div><p><b>${esc(it.english_meanings)}</b></p>${it.german_explanation?`<p>${esc(it.german_explanation)}</p>`:''}${it.plural?`<p>Plural: ${esc(it.plural)}</p>`:''}${it.praeteritum?`<p>${esc([it.present_ich,it.present_du,it.present_er_sie_es,it.present_wir,it.present_ihr,it.present_sie_Sie].join(' · '))}<br>${esc(it.praeteritum)} · ${esc(it.auxiliary)} ${esc(it.partizip_ii)}</p>`:''}${it.grammar_pattern?`<p>${esc(it.grammar_pattern)}</p>`:''}${it.example_de?`<p><i>${esc(it.example_de)}</i><br><span class="m">${esc(it.example_en)}</span></p>`:''}${'speechSynthesis'in window?`<div style="margin-top:10px"><button class="b s" style="width:100%;margin:0" onclick="say('${esc(gname(it)).replace(/'/g,'')}')">🔊 Listen (Pronunciation)</button></div>`:''}<div class="${canBack?'btn-grid-2':'btn-row'}" style="margin-top:14px">${canBack?`<button class="b s" onclick="goBack()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:4px"><polyline points="15 18 9 12 15 6"/></svg>Previous</button>`:''}<button class="b" onclick="introduce('${it.id}')">Test me <kbd>Enter</kbd></button></div></div>`}
+const ex=P.ex,it=P.it;if(P.ph=='ask')return`<h1>${SK[ex.sk]}</h1>${hdr}<div class="card"><p class="m">${esc(ex.q)}</p>${ex.w?`<div class="big2">${esc(ex.w)}</div>`:''}${ex.t==1?ex.opts.map((o,i)=>`<button class="opt ${sel==o?'on':''}" onclick="sel=this.dataset.o;render()" data-o="${esc(o)}"><kbd>${i+1}</kbd>${esc(o)}</button>`).join(''):`<input id="ans" class="big" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(P.draft||'')}" oninput="P.draft=this.value" onkeydown="if(event.key=='Enter')submit()">`}<div class="${canBack?'btn-grid-2':'btn-row'}" style="margin-top:14px">${canBack?`<button class="b s" type="button" onclick="goBack()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:4px"><polyline points="15 18 9 12 15 6"/></svg>Previous</button>`:''}<button class="b" onclick="submit()" ${ex.t==1&&!sel?'disabled':''}>Check <kbd>Enter</kbd></button></div></div>`;
+const g=P.gc,lab={correct:['Correct','ok'],norm:['Correct (capitalization/spacing normalized)','ok'],partial:['Partly correct — check spelling, umlauts or the article','w'],incorrect:['Not quite','bad']};
+return`<h1>Feedback</h1>${hdr}<div class="card ${P.pend?'':{correct:'okc',norm:'okc',partial:'wc',incorrect:'badc'}[g]}">${P.pend?`<p><b>Compare with the reference, then rate yourself.</b></p>`:`<p class="${lab[g][1]}"><b>${lab[g][0]}</b></p>`}<p>Your answer: ${esc(P.raw)}</p>${ex.ans.length?`<p>Expected: <b>${esc(ex.ans.slice(0,3).join(' / '))}</b></p>`:`<p>Reference: <b>${esc(it.reference_sentence_de||it.example_de||'(none stored)')}</b><br><span class="m">${esc(it.reference_sentence_en||it.example_en||'')}</span></p>`}${P.note?`<p class="m">${esc(P.note)}</p>`:''}${it.grammar_pattern&&ex.sk!='mean'?`<p class="m">${esc(it.grammar_pattern)}</p>`:''}${it.example_de&&ex.ans.length?`<p class="m"><i>${esc(it.example_de)}</i> ${esc(it.example_en)}</p>`:''}
+${P.pend?`<div class="btn-grid-3" style="margin-top:14px"><button class="b" onclick="rec('correct',1)"><kbd>1</kbd> I was right</button><button class="b s" onclick="rec('partial',1)"><kbd>2</kbd> Partly</button><button class="b d" onclick="rec('incorrect',1)"><kbd>3</kbd> Wrong</button></div>`:`<div class="btn-grid-2" style="margin-top:14px"><button class="b s" onclick="goBack()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:4px"><polyline points="15 18 9 12 15 6"/></svg>Previous</button><button class="b" onclick="adv()">Next <kbd>Enter</kbd></button></div>`}</div>`}
+const fmt=ms=>Math.floor(ms/6e4)+':'+String(Math.floor(ms/1e3)%60).padStart(2,'0'),say=t=>{const u=new SpeechSynthesisUtterance(t);u.lang='de-DE';speechSynthesis.speak(u)};
+function nextPlan(){const d=today();for(let i=0;i<S.set.times.length;i++)if(['Upcoming','Due now'].includes(slotStatus(i)))return`session ${i+1} at ${S.set.times[i]} today · ${dueList().length} reviews due now`;return`first session tomorrow at ${S.set.times[0]}`}
+setInterval(()=>{if(A&&A.run&&tab=='train'&&$('#tm')){const l=S.set.min*6e4-elapsed();$('#tm').textContent=fmt(Math.max(0,l));const pb=$('#pbi');if(pb)pb.style.width=Math.min(100,elapsed()/(S.set.min*600))+'%';if(l<=0&&!$('.ban'))render()}remind()},1000);document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseS()});addEventListener('pagehide',pauseS);
+const notified=new Set();function remind(){if(!S.set.notify||!('Notification'in window)||Notification.permission!='granted')return;S.set.times.forEach((t,i)=>{if(slotStatus(i)=='Completed')return;const d=slotMs(today(),t),n=now();[[d,'Session due'],[d+S.set.follow*6e4,'Follow-up: session still open']].forEach(([x,m],j)=>{const key=today()+i+j;if(n>=x&&n<x+6e4&&!notified.has(key)){notified.add(key);new Notification('INTO Vokabeltrainer',{body:m+' ('+t+')'})}})})}
+function selProgDay(d){progDay=(progDay==d?null:d);render()}
+function vProg(){
+  const days=[...Array(7)].map((_,i)=>dstr(now()-(6-i)*D));
+  const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const dailyStats=days.map(d=>{
+    const secs=studySecs(d);
+    const m=Math.round(secs/6)/10;
+    const sess=S.sessions.filter(s=>s.date==d);
+    const dayReviews=S.logs.filter(l=>dstr(l.t)==d);
+    const correctRev=dayReviews.filter(l=>l.g=='correct'||l.g=='norm').length;
+    const dateObj=new Date(d+'T12:00:00');
+    return{
+      date:d,
+      dayShort:dayNames[dateObj.getDay()],
+      dayNum:d.slice(8),
+      min:m,
+      secs,
+      sessions:sess,
+      reviewsCount:dayReviews.length,
+      correctCount:correctRev,
+      isToday:d==today()
+    };
+  });
+  const mins=dailyStats.map(s=>s.min);
+  const tgtMin=S.set.times.length*S.set.min;
+  const mx=Math.max(tgtMin,15,...mins);
+  const totalMins=mins.reduce((a,b)=>a+b,0);
+  const activeDays=dailyStats.filter(s=>s.min>0).length;
+  const avgMins=activeDays?Math.round((totalMins/activeDays)*10)/10:0;
+  const L=S.logs,gc=g=>L.filter(l=>g=='correct'?l.g=='correct'||l.g=='norm':l.g==g).length,du=dueList();
+  const selectedDay=progDay?dailyStats.find(s=>s.date==progDay)||dailyStats[6]:dailyStats[6];
+  const isSelected=(d)=>progDay?progDay==d:d==today();
+
+  const gt=key=>{const m={};S.items.forEach(it=>{const k=it[key]||'—',o=m[k]=m[k]||{n:0,i:0,s:0};o.n++;if(it.intro){o.i++;if(skillsFor(it).every(s=>(S.states[it.id+'|'+s]||{iv:0}).iv>=7))o.s++}});return`<div class="table-wrap"><table><tr><th>${key}</th><th class="tc">Items</th><th class="tc">Intro</th><th class="tr">Stable (≥7d)</th></tr>${Object.entries(m).map(([k,o])=>`<tr><td>${esc(k)}</td><td class="tc tbl-num">${o.n}</td><td class="tc tbl-num ${o.i?'':'tbl-zero'}">${o.i}</td><td class="tr tbl-num ${o.s?'tbl-mature':'tbl-zero'}">${o.s}</td></tr>`).join('')}</table></div>`};
+  const hard=Object.values(S.states).filter(s=>s.fail&&SK[s.sk]&&S.im[s.id]).sort((a,b)=>b.fail-a.fail).slice(0,6);
+
+  const targetLineBottom=Math.round((tgtMin/mx)*86);
+
+  return`<h1>Progress</h1>
+<div class="card">
+  <div class="chart-card-header">
+    <div>
+      <h2 class="chart-headline">Study time: last 7 days</h2>
+      <div class="chart-sub">Tap any day column to view detailed sessions and accuracy</div>
+    </div>
+    <div class="chart-badge" title="Daily study target based on schedule (${S.set.times.length} sessions × ${S.set.min} min)">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      Target ${tgtMin}m/day
+    </div>
+  </div>
+
+  <div class="chart-stats-grid">
+    <div class="chart-stat-item">
+      <div class="chart-stat-val">${totalMins.toFixed(1)}m</div>
+      <div class="chart-stat-lbl">7-day total</div>
+    </div>
+    <div class="chart-stat-item">
+      <div class="chart-stat-val">${avgMins.toFixed(1)}m</div>
+      <div class="chart-stat-lbl">Active day avg</div>
+    </div>
+    <div class="chart-stat-item">
+      <div class="chart-stat-val">${activeDays} / 7</div>
+      <div class="chart-stat-lbl">Days studied</div>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-bars-wrap">
+      <div class="chart-target-line" style="bottom:${targetLineBottom+30}px" title="Target: ${tgtMin} min/day">
+        <span class="chart-target-lbl">Goal ${tgtMin}m</span>
+      </div>
+      ${dailyStats.map(s=>{
+        const barH=Math.max(3,Math.round((s.min/mx)*86));
+        const met=s.min>=tgtMin;
+        const selCls=isSelected(s.date)?'selected':'';
+        const todayCls=s.isToday?'is-today':'';
+        return`
+        <div class="chart-col ${selCls} ${todayCls}" onclick="selProgDay('${s.date}')" title="${s.dayShort} ${s.date}: ${s.min} min (${s.sessions.length} sessions)">
+          <span class="chart-bar-val">${s.min>0?s.min+'m':'—'}</span>
+          <div class="chart-bar-outer">
+            <div class="chart-bar-fill ${met?'target-met':''}" style="height:${barH}px"></div>
+          </div>
+          <div class="chart-col-date">
+            <span class="chart-col-dayname">${s.dayShort}</span>
+            <span>${s.dayNum}</span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  ${selectedDay?`
+  <div class="chart-day-detail">
+    <div class="chart-day-detail-header">
+      <span>${selectedDay.dayShort}, ${selectedDay.date} ${selectedDay.isToday?'<span class="pill ok" style="font-size:10px;margin-left:4px">Today</span>':''}</span>
+      <span class="chart-day-detail-pill ${selectedDay.min>=tgtMin?'ok':selectedDay.min>0?'a':''}" style="background:var(--c-subtle);border:1px solid var(--bd)">
+        ${selectedDay.min} min studied ${selectedDay.min>=tgtMin?'✓ Goal met':''}
+      </span>
+    </div>
+    <div class="chart-day-sessions">
+      ${selectedDay.sessions.length?`
+        <b>Sessions completed (${selectedDay.sessions.length}):</b>
+        ${selectedDay.sessions.map((sn,idx)=>{
+          const totalAns=(sn.c||0)+(sn.p||0)+(sn.i||0);
+          const timeStr=sn.t?new Date(sn.t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
+          return`<div style="padding:4px 0;border-bottom:1px solid var(--bd-subtle, rgba(0,0,0,0.05));display:flex;justify-content:space-between">
+            <span>${timeStr?timeStr+' · ':''}Session ${sn.slot!==undefined?sn.slot+1:idx+1} ${sn.label?`(${sn.label})`:''}</span>
+            <span><b>${Math.round(sn.secs/60)}m</b> (${totalAns} answers, ${sn.c||0} correct)</span>
+          </div>`;
+        }).join('')}
+      `:`<span class="m">No saved sessions completed on this day.</span>`}
+      ${selectedDay.reviewsCount?`<div style="margin-top:4px" class="m">Total review cards answered on this day: <b>${selectedDay.reviewsCount}</b> (${selectedDay.correctCount} correct · ${Math.round(selectedDay.correctCount/selectedDay.reviewsCount*100)}% accuracy)</div>`:''}
+    </div>
+  </div>`:''}
+
+  <div class="chart-overview-chips">
+    <span class="chart-chip">Completed sessions: <b>${S.sessions.length}</b></span>
+    <span class="chart-chip">Current streak: <b>${streak()} ${streak()==1?'day':'days'}</b></span>
+    <span class="chart-chip">Total reviews: <b>${L.length}</b></span>
+    <span class="chart-chip">Correct: <b style="color:var(--ok)">${gc('correct')}</b></span>
+    <span class="chart-chip">Partial: <b style="color:var(--w)">${gc('partial')}</b></span>
+    <span class="chart-chip">Incorrect: <b style="color:var(--bad)">${gc('incorrect')}</b></span>
+    <span class="chart-chip">Due now: <b>${du.length}</b></span>
+    <span class="chart-chip">Overdue: <b class="${du.filter(s=>s.due<dayStart()).length?'w':''}">${du.filter(s=>s.due<dayStart()).length}</b></span>
+    <span class="chart-chip">Words introduced: <b>${S.items.filter(i=>i.intro).length}</b></span>
+  </div>
+</div>
+<div class="card"><h2>Skill mastery</h2><div class="mastery-legend"><span class="leg-item"><span class="leg-dot leg-learn"></span>Learn</span><span class="leg-item"><span class="leg-dot leg-rev"></span>Review</span><span class="leg-item"><span class="leg-dot leg-mat"></span>Mature (≥21d)</span></div><div class="table-wrap"><table><thead><tr><th>Skill</th><th class="tc" title="New or Learning">Learn</th><th class="tc" title="Review interval < 21 days">Review</th><th class="tc" title="Mature interval ≥ 21 days">Mature</th><th class="tr" title="Accuracy rate across reviews">Accuracy</th></tr></thead><tbody>${Object.keys(SK).map(k=>{const s=Object.values(S.states).filter(x=>x.sk==k&&S.im[x.id]),l=L.filter(x=>x.sk==k),a=l.filter(x=>x.g=='correct'||x.g=='norm').length,nL=s.filter(x=>['New','Learning'].includes(stLabel(x))).length,nR=s.filter(x=>stLabel(x)=='Review').length,nM=s.filter(x=>stLabel(x)=='Mature').length,tot=nL+nR+nM;const pL=tot?(nL/tot*100).toFixed(1):0,pR=tot?(nR/tot*100).toFixed(1):0,pM=tot?(nM/tot*100).toFixed(1):0;const accHtml=l.length<5?`<span class="tbl-zero" title="Needs ≥5 reviews for score">—</span>`:`<span class="${a/l.length>=0.8?'tbl-ok':a/l.length>=0.6?'tbl-warn':'tbl-bad'}">${Math.round(a/l.length*100)}%</span><span class="tbl-sub">${l.length} rev</span>`;return`<tr><td><span class="tbl-skill-title">${SK[k]}<span class="tbl-count">(${tot})</span></span>${tot?`<div class="tbl-bar" title="Learn: ${nL}, Review: ${nR}, Mature: ${nM}"><span style="width:${pL}%;background:#f59e0b"></span><span style="width:${pR}%;background:var(--a)"></span><span style="width:${pM}%;background:var(--ok)"></span></div>`:''}</td><td class="tc tbl-num ${nL?'':'tbl-zero'}">${nL}</td><td class="tc tbl-num ${nR?'':'tbl-zero'}">${nR}</td><td class="tc tbl-num ${nM?'tbl-mature':'tbl-zero'}">${nM}</td><td class="tr tbl-num">${accHtml}</td></tr>`}).join('')}</tbody></table></div></div>
+<div class="card"><h2>By lesson</h2>${gt('lesson')}</div><div class="card"><h2>By category</h2>${gt('category')}</div>`}
+/* ---- CSV import ---- */
+function csv(t,d){const R=[];let r=[],f='',q=0;t=t.replace(/^\uFEFF/,'');for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++}else q=0}else f+=c}else if(c=='"'&&!f)q=1;else if(c==d){r.push(f);f=''}else if(c=='\n'||c=='\r'){if(c=='\r'&&t[i+1]=='\n')i++;r.push(f);f='';if(r.some(x=>x.trim()))R.push(r);r=[]}else f+=c}r.push(f);if(r.some(x=>x.trim()))R.push(r);return R}
+const h32=s=>{let h=5381;for(const c of s)h=(h*33^c.charCodeAt(0))>>>0;return h.toString(36)};
+function matchField(raw){
+  if(!raw) return '';
+  const s=String(raw).trim().toLowerCase();
+  const clean=s.replace(/[^a-z0-9äöüß_]/g,'_').replace(/_+/g,'_').replace(/^_+|_+$/g,'');
+  const direct=FIELDS.find(f=>f.toLowerCase()===clean);
+  if(direct) return direct;
+  if(ALIAS[clean]) return ALIAS[clean];
+  if(ALIAS[s]) return ALIAS[s];
+  if(/^(deutsch|german|wort|woerter|wörter|vokabel|vokabeln|stichwort|begriff|begriffe|front|vorderseite|term|expression|vocab|vocabulary|target|target_word|de|ger)$/i.test(clean)||clean.includes('german')||clean.includes('deutsch')||clean.includes('vokabel')||clean.includes('stichwort')) return 'german';
+  if(/^(english|englisch|translation|translations|meaning|meanings|bedeutung|bedeutungen|uebersetzung|übersetzung|uebersetzungen|übersetzungen|definition|back|rueckseite|rückseite|source|en|eng)$/i.test(clean)||clean.includes('english')||clean.includes('englisch')||clean.includes('translat')||clean.includes('bedeut')||clean.includes('uebersetz')||clean.includes('übersetz')||clean.includes('meaning')) return 'english_meanings';
+  if(/^(category|kategorie|kategorien|wortart|part_of_speech|pos|type|word_type)$/i.test(clean)||clean.includes('kategori')||clean.includes('wortart')) return 'category';
+  if(/^(example_en|english_example|beispiel_en|englischer_satz)$/i.test(clean)||(clean.includes('example')&&clean.includes('en'))) return 'example_en';
+  if(/^(example|example_de|beispiel|beispielsatz|beispiele|sentence|satz|german_sentence|context|kontext)$/i.test(clean)||clean.includes('beispiel')||clean.includes('example')) return 'example_de';
+  if(/^(article|artikel|gender|geschlecht|genus)$/i.test(clean)) return 'article';
+  if(/^(singular|einzahl)$/i.test(clean)) return 'singular';
+  if(/^(plural|mehrzahl|pluralform)$/i.test(clean)||clean.includes('plural')) return 'plural';
+  if(/^(infinitive|infinitiv|grundform|verb)$/i.test(clean)) return 'infinitive';
+  if(/^(book|buch|textbook|lehrbuch|kursbuch)$/i.test(clean)||clean.includes('buch')||clean.includes('book')) return 'book';
+  if(/^(level|niveau|stufe|cefr|sprachniveau)$/i.test(clean)||clean.includes('niveau')||clean.includes('level')) return 'level';
+  if(/^(lesson|lektion|unit|kapitel|einheit|chapter|lekt)$/i.test(clean)||clean.includes('lektion')||clean.includes('lesson')||clean.includes('kapitel')) return 'lesson';
+  if(/^(notes|note|notiz|notizen|comment|comments|anmerkung|anmerkungen|hinweis)$/i.test(clean)||clean.includes('notiz')||clean.includes('anmerk')) return 'notes';
+  if(/^(topic|thema|themen)$/i.test(clean)||clean.includes('thema')) return 'topic';
+  if(/^(german_explanation|erklaerung|erklärung|definition_de)$/i.test(clean)||clean.includes('erklaer')||clean.includes('erklär')) return 'german_explanation';
+  return '';
+}
+async function pick(e){
+  const f=e.target.files[0];if(!f)return;
+  const buf=await f.arrayBuffer();let t,enc='UTF-8';
+  try{t=new TextDecoder('utf-8',{fatal:true}).decode(buf)}catch(x){t=new TextDecoder('windows-1252').decode(buf);enc='Windows-1252 (the file was not UTF-8; check the umlauts in the preview)'}
+  e.target.value='';
+  t=t.replace(/^\uFEFF/,'');
+  let explicitDelim=null;
+  const mSep=t.match(/^\s*sep=([^\r\n])\s*(?:\r?\n|$)/i);
+  if(mSep){explicitDelim=mSep[1];t=t.slice(mSep[0].length)}
+  t=t.replace(/^([ \t]*(?:#|\/\/)[^\r\n]*(?:\r?\n|$))+/, '');
+  const lines=t.split(/\r?\n/).filter(x=>x.trim().length>0);
+  const sample=lines.slice(0,10);
+  const d=explicitDelim||[',',';','\t','|'].sort((a,b)=>{
+    const cntA=sample.reduce((sum,line)=>sum+(line.split(a).length-1),0);
+    const cntB=sample.reduce((sum,line)=>sum+(line.split(b).length-1),0);
+    return cntB-cntA;
+  })[0]||',';
+  IMP={name:f.name,text:t,d,res:null,bad:enc!='UTF-8',enc,hasHeader:null};
+  parse();
+}
+function parse(){
+  let R=csv(IMP.text,IMP.d);
+  if(R.length>0&&R[0].length===1){
+    if(IMP.d!==';'&&R[0][0].includes(';')){IMP.d=';';R=csv(IMP.text,';');}
+    else if(IMP.d!=='\t'&&R[0][0].includes('\t')){IMP.d='\t';R=csv(IMP.text,'\t');}
+  }
+  IMP.rawRows=R;
+  if(IMP.hasHeader===null){
+    if(R.length===0){IMP.hasHeader=false}
+    else if(R.length===1){IMP.hasHeader=R[0].some(cell=>!!matchField(cell))}
+    else{IMP.hasHeader=R[0].some(cell=>!!matchField(cell))}
+  }
+  if(IMP.hasHeader&&R.length>0){
+    IMP.h=R[0];
+    IMP.rows=R.slice(1);
+  }else{
+    const colCount=Math.max(...R.map(r=>r.length),0);
+    IMP.h=Array.from({length:colCount},(_,i)=>`Col ${i+1}`);
+    IMP.rows=R;
+  }
+  IMP.map=IMP.h.map(h=>matchField(h));
+  if(!IMP.map.includes('german')&&IMP.h.length>=1){
+    IMP.map[0]='german';
+    if(IMP.h.length>=2&&!IMP.map.includes('english_meanings'))IMP.map[1]='english_meanings';
+  }
+  build();
+  render();
+}
+function toggleHeaderRow(checked){
+  if(!IMP)return;
+  IMP.hasHeader=checked;
+  parse();
+}
+function autoMapFirstCols(){
+  if(!IMP||!IMP.h)return;
+  IMP.map=IMP.h.map(()=>'');
+  if(IMP.h.length>=1)IMP.map[0]='german';
+  if(IMP.h.length>=2)IMP.map[1]='english_meanings';
+  if(IMP.h.length>=3&&!IMP.map[2])IMP.map[2]='example_de';
+  build();
+  render();
+}
+const nCat=c=>{c=lc(c);return/^(noun|nomen|n)$/.test(c)?'noun':/^(verb|v)$/.test(c)?'verb':/^(adj|adjective|adverb|adv|adjectives\/adverbs)/.test(c)?'adj':/^(expr|expression|phrase)/.test(c)?'expr':/^(conn|connector|function)/.test(c)?'conn':c};
+function build(){
+  const seen=new Set();
+  const rowOffset=IMP.hasHeader?2:1;
+  IMP.out=IMP.rows.map((r,n)=>{
+    const o={},e=[],w=[];
+    IMP.map.forEach((f,i)=>{if(f&&(r[i]||'').trim())o[f]=r[i].trim()});
+    if(o.category)o.category=nCat(o.category);
+    else{o.category=o.infinitive?'verb':o.article?'noun':'other';w.push('category inferred as '+o.category)}
+    if(!o.german)o.german=o.infinitive||(o.article&&o.singular?o.article+' '+o.singular:'');
+    if(!o.infinitive&&o.category=='verb')o.infinitive=o.german;
+    if(o.category=='noun'){
+      const m=/^(der|die|das) (.+)$/i.exec(o.german);
+      if(m){if(!o.article)o.article=m[1].toLowerCase();if(!o.singular)o.singular=m[2]}
+      else if(o.article&&o.german&&!o.german.toLowerCase().startsWith(o.article+' '))o.german=o.article+' '+o.german;
+    }
+    if(!o.german)e.push('no German word in mapped column');
+    if(!o.english_meanings)w.push('no English meaning');
+    {
+      const mi=['book','level','lesson'].filter(f=>!o[f]);
+      if(mi.length)w.push('missing '+mi.join(', ')+' (kept; appears as unassigned in Training)');
+    }
+    if(!o.id)o.id='i_'+h32(lc([o.level,o.book,o.lesson,o.german].join('|')));
+    o.k=o.id;
+    let st=e.length?'rejected':seen.has(o.id)?'repeat':S.im[o.id]?'update':'new';
+    seen.add(o.id);
+    return{o,e,w,st,n:n+rowOffset};
+  });
+}
+const cnt=s=>(IMP&&IMP.out)?IMP.out.filter(x=>x.st==s).length:0;
+function vImp(){
+  let b=`<h1>Import CSV</h1><div class="card"><input type="file" accept=".csv,.txt,text/csv" onchange="pick(event)"><p class="m">UTF-8, quoted fields and line breaks supported. Semicolon (;), comma (,), and tab delimiters are auto-detected. Headerless files and standard headers are supported.</p></div>`;
+  if(!IMP)return b;
+  if(IMP.res)return b+`<div class="card"><h2>Import finished</h2><p>Added ${IMP.res.a} · Updated ${IMP.res.u} (review history kept) · Skipped ${IMP.res.s} · Rejected ${IMP.res.r}</p><button class="b" onclick="IMP=null;go('lib')">Open library</button></div>`;
+  const canImport=cnt('new')+cnt('update')>0;
+  const hasGermanCol=IMP.map&&IMP.map.includes('german');
+  const totalRows=IMP.rows?IMP.rows.length:0;
+  return b+`<div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <h2 style="margin:0">${esc(IMP.name)}</h2>
+      <button class="b s" style="font-size:12px;padding:4px 10px" onclick="autoMapFirstCols()" title="Reset to Column 1 = German, Column 2 = English">⚡ Auto-map Col 1 &amp; 2</button>
+    </div>
+    ${IMP.bad?`<div class="ban">Read as ${esc(IMP.enc)}</div>`:''}
+    <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end">
+      <div style="flex:1;min-width:140px">
+        <label>Delimiter</label>
+        <select onchange="IMP.d=this.value;parse()">${[[',','comma ( , )'],[';','semicolon ( ; )'],['\t','tab ( \\t )'],['|','pipe ( | )']].map(([v,l])=>`<option value="${v}" ${IMP.d==v?'selected':''}>${l}</option>`).join('')}</select>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding-bottom:10px">
+        <label style="margin:0;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:13px">
+          <input type="checkbox" style="width:auto;margin:0" ${IMP.hasHeader?'checked':''} onchange="toggleHeaderRow(this.checked)"> First row is column header
+        </label>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <label style="margin-bottom:6px">Column mapping ${hasGermanCol?'<span style=\"color:var(--ok);font-size:12px;font-weight:normal\">✓ German column mapped</span>':'<span style=\"color:var(--bad);font-size:12px;font-weight:normal\">⚠️ German column required</span>'}</label>
+      ${IMP.h.map((h,i)=>{
+        const cur=IMP.map[i];
+        const isGer=cur==='german';
+        const isEng=cur==='english_meanings';
+        const badge=isGer?'background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);padding:4px 8px;border-radius:6px;margin-bottom:6px':isEng?'background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.25);padding:4px 8px;border-radius:6px;margin-bottom:6px':'padding:4px 0;margin-bottom:4px';
+        return`<div style="${badge};display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px">
+          <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:45%">${esc(h||`Col ${i+1}`)}</span>
+          <span style="color:var(--mu)">→</span>
+          <select style="max-width:50%" onchange="IMP.map[${i}]=this.value;build();render()">
+            <option value="">(ignore)</option>
+            ${FIELDS.map(f=>`<option value="${f}" ${cur==f?'selected':''}>${f}</option>`).join('')}
+          </select>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+  <div class="card">
+    <h2>Preview &amp; validation</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>German</th><th>English meaning</th><th class="tr">Status</th></tr></thead>
+        <tbody>
+          ${IMP.out.slice(0,5).map(x=>`<tr><td><b>${esc(x.o.german||'—')}</b></td><td>${esc(x.o.english_meanings||'—')}</td><td class="tr"><span class="badge ${x.st==='new'?'ok':x.st==='update'?'info':x.st==='repeat'?'mu':'bad'}">${x.st}</span></td></tr>`).join('')}
+          ${IMP.out.length===0?`<tr><td colspan="3" style="text-align:center;color:var(--mu);padding:14px">No rows detected in file</td></tr>`:''}
+        </tbody>
+      </table>
+    </div>
+    <p style="margin:10px 0 6px 0">${IMP.out.length} rows: <b>${cnt('new')}</b> new · <b>${cnt('update')}</b> existing (will update) · <b>${cnt('repeat')}</b> repeated · <b>${cnt('rejected')}</b> rejected</p>
+    ${(()=>{const c={};IMP.out.filter(x=>x.st!='rejected').forEach(x=>skillsFor(x.o).forEach(k=>c[k]=(c[k]||0)+1));const entries=Object.entries(c);return entries.length?'<p class="m">Skills supported: '+entries.map(([k,n])=>SK[k]+' '+n).join(' · ')+'</p>':''})()}
+    ${!canImport?`<div style="margin:12px 0;padding:12px;border-radius:8px;background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.25);color:var(--bad);font-size:13px;line-height:1.4">
+      <b style="display:block;margin-bottom:4px">⚠️ Why is "Confirm import" gray?</b>
+      ${totalRows===0?`The file has 0 data rows. If your file only has 1 line (e.g. <code>Haus;House</code>), uncheck <b>"First row is column header"</b> above so it is treated as a vocabulary row instead of a column title.`:
+      !hasGermanCol?`The importer needs to know which column has your German words. Look at the <b>Column mapping</b> box above and select <b>german</b> for your German words column, or click <button class="b s" style="font-size:11px;padding:2px 8px;margin-left:4px" onclick="autoMapFirstCols()">Auto-map Col 1 &amp; 2</button>.`:
+      cnt('rejected')===IMP.out.length?`All ${IMP.out.length} rows were rejected because they are missing words in the mapped German column. Check the row errors below.`:
+      `No new or updated items detected (all rows are repeated or already up to date in your library).`}
+    </div>`:''}
+    ${IMP.out.filter(x=>x.e.length||x.w.length).slice(0,8).map(x=>`<div class="m ${x.e.length?'bad':''}" style="font-size:12px;margin-top:4px">Row ${x.n}: ${esc([...x.e,...x.w].join('; '))}</div>`).join('')}
+    <button class="b" style="width:100%;margin-top:12px" onclick="runImp()" ${canImport?'':'disabled'}>${canImport?`Confirm import (${cnt('new')+cnt('update')} words)`:'Confirm import'}</button>
+  </div>`;
+}
+async function runImp(){const a=[],r={a:0,u:0,s:cnt('repeat'),r:cnt('rejected')};IMP.out.forEach(x=>{if(x.st=='new'){a.push(x.o);S.items.push(x.o);r.a++}else if(x.st=='update'){const it=S.im[x.o.id];Object.entries(x.o).forEach(([k,v])=>{if(v)it[k]=v});a.push(it);r.u++}});reidx();a.forEach(ensure);await putMany('items',a);IMP.res=r;render()}
+function expCSV(){const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';dl('into-vokabeltrainer-vocab.csv','text/csv;charset=utf-8','\uFEFF'+FIELDS.join(',')+'\n'+S.items.map(i=>FIELDS.map(f=>q(i[f])).join(',')).join('\n'))}
+const dl=(n,t,c)=>{if(window.AndroidBridge&&typeof window.AndroidBridge.saveFile==='function'){window.AndroidBridge.saveFile(n,t,c);}else{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:t}));a.download=n;a.click();}};
+/* ---- Settings, backup/restore ---- */
+const setv=(k,v)=>{S.set[k]=v;saveSet();render();if($('#side-drawer')?.classList.contains('open'))renderSettingsSide();};
+function renderSettingsSide(){
+  const c=$('#side-drawer-content');
+  if(c)c.innerHTML=vSet();
+}
+function openSettingsSide(){
+  renderSettingsSide();
+  const d=$('#side-drawer'),b=$('#side-drawer-backdrop');
+  if(d)d.classList.add('open');
+  if(b)b.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeSettingsSide(){
+  const d=$('#side-drawer'),b=$('#side-drawer-backdrop');
+  if(d)d.classList.remove('open');
+  if(b)b.classList.remove('open');
+  document.body.style.overflow='';
+}
+function vSet(){const s=S.set;return`<div class="card"><h2>Schedule</h2><label>Sessions per day</label><select onchange="setN(+this.value)">${[1,2,3,4].map(n=>`<option ${s.times.length==n?'selected':''}>${n}</option>`).join('')}</select><label>Minutes per session (daily target: ${s.times.length*s.min} min)</label><input type="number" min="3" max="60" value="${s.min}" onchange="setv('min',Math.max(3,+this.value||10))"><label>Session times</label>${s.times.map((t,i)=>`<input type="time" value="${t}" onchange="S.set.times[${i}]=this.value;saveSet();render();if($('#side-drawer')?.classList.contains('open'))renderSettingsSide()">`).join(' ')}<label>New words per day (a cap, not a quota)</label><input type="number" min="0" max="40" value="${s.newDay}" onchange="setv('newDay',Math.max(0,+this.value||0))"></div>
+<div class="card"><h2>Reminders &amp; accountability</h2><label><input type="checkbox" style="width:auto" ${s.notify?'checked':''} onchange="notif(this.checked)"> Notification</label><label>Follow-up reminder after (min)</label><input type="number" value="${s.follow}" onchange="setv('follow',+this.value||15)"><label><input type="checkbox" style="width:auto" ${s.strong?'checked':''} onchange="setv('strong',this.checked)"> Strong accountability (follow-ups, clear missed status; never punitive)</label></div>
+<div class="card"><h2>Exercises &amp; answers</h2>${EXN.map((n,i)=>`<label><input type="checkbox" style="width:auto" ${s.off.includes(i)?'':'checked'} onchange="togEx(${i},this.checked)"> ${i+1}. ${n}</label>`).join('')}<label><input type="checkbox" style="width:auto" ${s.lenient?'checked':''} onchange="setv('lenient',this.checked)"> Give partial credit for one-letter typos (umlauts are never ignored)</label><p class="m">Instructions are in English only; pronunciation uses the device's German voice if available (Listen button on new words).</p></div>
+<div class="card"><h2>Data</h2><p class="m">Data is stored locally on this device. Clearing app storage can erase it, so export backups regularly.</p><div class="btn-grid-2" style="margin-top:12px"><button class="b" onclick="expJSON()">Export JSON backup</button><button class="b s" onclick="$('#restore-file').click()">Restore JSON backup</button></div><input type="file" id="restore-file" accept=".json" onchange="restore(event)" style="display:none"><div style="margin-top:8px"><button class="b s" style="width:100%" onclick="expCSV()">Export vocabulary CSV</button></div></div>
+<div class="card"><h2>Testing: simulate time</h2><p class="m">Moves the app clock forward to test missed sessions and due reviews. Simulated, not real.</p><div class="btn-grid-3" style="margin-top:12px"><button class="b s" onclick="setv('sim',S.set.sim+1)">+1 hour</button><button class="b s" onclick="setv('sim',S.set.sim+24)">+1 day</button><button class="b s" onclick="setv('sim',0)">Reset clock</button></div></div>
+<div class="card dz"><h2>Clear data</h2><p class="m">Irreversible data actions. Back up your data before using these.</p><div style="margin-top:12px"><button class="b d" style="width:100%" onclick="cleanDlg()">Clean library</button></div></div>`}
+function setN(n){const d=['08:00','14:00','20:00','22:00'];S.set.times=Array.from({length:n},(_,i)=>S.set.times[i]||d[i]);saveSet();render();if($('#side-drawer')?.classList.contains('open'))renderSettingsSide();}
+function togEx(i,on){S.set.off=S.set.off.filter(x=>x!=i);if(!on)S.set.off.push(i);saveSet();if($('#side-drawer')?.classList.contains('open'))renderSettingsSide();}
+async function notif(on){setv('notify',on);if(window.AndroidBridge&&typeof window.AndroidBridge.setNotificationsEnabled==='function'){window.AndroidBridge.setNotificationsEnabled(on,JSON.stringify(S.set.times),S.set.follow)}else if(on&&'Notification'in window&&Notification.permission==='default'){try{await Notification.requestPermission()}catch(e){}}}
+function expJSON(){dl('into-vokabeltrainer-backup-'+dstr(Date.now())+'.json','application/json',JSON.stringify({app:'gmc',v:1,exported:new Date().toISOString(),items:S.items,states:Object.values(S.states),logs:S.logs,sessions:S.sessions,settings:S.set}))}
+async function restore(e){const f=e.target.files[0];if(!f)return;let b;try{b=JSON.parse(await f.text());if(b.app!='gmc'||!Array.isArray(b.items)||!Array.isArray(b.states)||!Array.isArray(b.logs)||!Array.isArray(b.sessions))throw 0}catch(x){return alert('This is not a valid INTO Vokabeltrainer backup. Nothing was changed.')}
+const nw=b.items.filter(i=>!S.im[i.id]).length,msg=`Backup (${b.exported}): ${b.items.length} items (${nw} new, ${b.items.length-nw} already present), ${b.states.length} skill states, ${b.logs.length} reviews, ${b.sessions.length} sessions.\n\nOK = MERGE (adds what is missing, keeps all current data).`;
+if(confirm(msg)){const ik=new Set(S.items.map(i=>i.id)),lk=new Set(S.logs.map(l=>l.k)),sk=new Set(S.sessions.map(s=>s.k)),ni=b.items.filter(i=>!ik.has(i.id)),ns=b.states.filter(s=>!S.states[s.k]),nl=b.logs.filter(l=>!lk.has(l.k)),nss=b.sessions.filter(s=>!sk.has(s.k));S.items.push(...ni);ns.forEach(s=>S.states[s.k]=s);S.logs.push(...nl);S.sessions.push(...nss);await putMany('items',ni);await putMany('states',ns);await putMany('logs',nl);await putMany('sessions',nss)}
+else if(confirm('Replace ALL current data with the backup? This cannot be undone.')){for(const n of NAMES)await clr(n);S.items=b.items;S.states={};b.states.forEach(s=>S.states[s.k]=s);S.logs=b.logs;S.sessions=b.sessions;S.set={...DEF,...(b.settings||{}),k:'set'};S.kv={set:S.set,onboarded:{k:'onboarded'}};A=null;await putMany('items',S.items);await putMany('states',b.states);await putMany('logs',S.logs);await putMany('sessions',b.sessions);await putMany('kv',[S.set,S.kv.onboarded])}else return;reidx();render()}
+async function rmDemo(){if(!confirm('Remove demo items and their review data? Your own vocabulary is kept.'))return;const ids=new Set(S.items.filter(i=>i.demo=='1').map(i=>i.id));S.items=S.items.filter(i=>!ids.has(i.id));S.logs=S.logs.filter(l=>!ids.has(l.id));for(const k of Object.keys(S.states))if(ids.has(S.states[k].id)){delete S.states[k];await del('states',k)}for(const l of S.logs.length?[]:[])0;for(const id of ids)await del('items',id);reidx();render()}
+async function reset(){if(prompt('This deletes ALL vocabulary, history and settings. Type RESET to confirm.')!='RESET')return;for(const n of NAMES)await clr(n);S={items:[],states:{},logs:[],sessions:[],kv:{},set:{...DEF},im:{}};A=null;P=null;render()}
+function cleanDlg(){
+  const matched=filt(),n=matched.length;
+  openDlg(`<h2>Clean library</h2>
+<p class="m">Permanently delete vocabulary and associated learning states.</p>
+${n?`<div id="clean-actions" style="margin-top:14px">
+  <button class="b d" id="btn-del-filtered" style="width:100%" onclick="confirmDelFiltered()">Delete the ${n} words matching the current Library filters</button>
+</div>`:`<p class="m" style="margin-top:14px">No words match the current Library filters.</p>`}
+${S.items.some(i=>i.demo=='1')?`<p style="margin-top:8px"><button class="b s" style="width:100%" onclick="confirmRmDemo()">Remove demo data</button></p>`:''}
+<p style="margin-top:12px"><button class="b s" style="width:100%" onclick="closeDlg()">Cancel</button></p>`);
+}
+function confirmDelFiltered(){
+  const matched=filt(),n=matched.length;
+  if(!n)return;
+  const box=$('#clean-actions');
+  if(!box)return delFilteredWords();
+  box.innerHTML=`<div class="card" style="border:1.5px solid var(--bad-bd);background:var(--bad-bg);color:var(--bad);padding:14px;margin:8px 0;text-align:left">
+    <div style="font-weight:700;font-size:15px;margin-bottom:6px">⚠️ Delete ${n} words?</div>
+    <div style="font-size:13px;line-height:1.45;color:var(--t)">This will permanently erase these ${n} vocabulary entries, their learning history, and review states from your device.</div>
+    <div class="btn-grid-2" style="margin-top:12px">
+      <button class="b d" id="btn-confirm-delete" onclick="delFilteredWords()">Yes, delete ${n}</button>
+      <button class="b s" onclick="cleanDlg()">Cancel</button>
+    </div>
+  </div>`;
+}
+function confirmRmDemo(){
+  const demoCount=S.items.filter(i=>i.demo=='1').length;
+  const box=$('#clean-actions')||$('#dlg');
+  if(!box)return rmDemo();
+  openDlg(`<h2>Remove demo data</h2>
+<div class="card" style="border:1.5px solid var(--bad-bd);background:var(--bad-bg);color:var(--bad);padding:14px;margin:8px 0;text-align:left">
+  <div style="font-weight:700;font-size:15px;margin-bottom:6px">⚠️ Remove ${demoCount} demo words?</div>
+  <div style="font-size:13px;line-height:1.45;color:var(--t)">Demo items and their review data will be erased. Your own custom or imported vocabulary will stay untouched.</div>
+  <div class="btn-grid-2" style="margin-top:12px">
+    <button class="b d" onclick="rmDemoDirect()">Remove Demo</button>
+    <button class="b s" onclick="cleanDlg()">Cancel</button>
+  </div>
+</div>`);
+}
+async function rmDemoDirect(){
+  const ids=new Set(S.items.filter(i=>i.demo=='1').map(i=>i.id));
+  const count=ids.size;
+  S.items=S.items.filter(i=>!ids.has(i.id));
+  S.logs=S.logs.filter(l=>!ids.has(l.id));
+  const delStateKeys=[];
+  for(const k of Object.keys(S.states)){
+    if(ids.has(S.states[k]?.id||k.split('|')[0])){
+      delStateKeys.push(k);
+      delete S.states[k];
+    }
+  }
+  await delMany('items',[...ids]);
+  await delMany('states',delStateKeys);
+  reidx();
+  closeDlg();
+  render();
+  if($('#side-drawer')?.classList.contains('open'))renderSettingsSide();
+  toast(`Removed ${count} demo ${count===1?'word':'words'}`);
+}
+function toast(msg,dur=3200){
+  const c=$('#toast-container');
+  if(!c)return;
+  const t=document.createElement('div');
+  t.className='toast';
+  t.innerHTML=`<span>✓</span> <span>${esc(msg)}</span>`;
+  c.appendChild(t);
+  setTimeout(()=>{
+    t.classList.add('toast-out');
+    t.addEventListener('animationend',()=>t.remove(),{once:true});
+    setTimeout(()=>t.remove(),250);
+  },dur);
+}
+async function delFilteredWords(){
+  const matched=filt();
+  if(!matched||!matched.length)return;
+  const n=matched.length;
+  const btn=$('#btn-confirm-delete')||$('#btn-del-filtered');
+  if(btn){btn.disabled=true;btn.textContent='Deleting...';}
+  const ids=matched.map(i=>i.id);
+  await delBatch(ids,null,`Cleared ${n} ${n===1?'word':'words'} from Library`);
+}
+async function delBatch(ids,msg,successToastMsg){
+  if(!ids||!ids.length)return;
+  const count=ids.length;
+  const set=new Set(ids);
+  const deletedItemKeys=S.items.filter(i=>set.has(i.id)).map(i=>i.k||i.id);
+  S.items=S.items.filter(i=>!set.has(i.id));
+  const delStateKeys=[];
+  for(const k of Object.keys(S.states)){
+    const st=S.states[k];
+    if(set.has(st?.id||k.split('|')[0])){
+      delStateKeys.push(k);
+      delete S.states[k];
+    }
+  }
+  if(deletedItemKeys.length)await delMany('items',deletedItemKeys);
+  if(delStateKeys.length)await delMany('states',delStateKeys);
+  if(A&&A.ids){
+    A.ids=A.ids.filter(id=>!set.has(id));
+    if(A.cur&&set.has(A.cur.k?.split('|')[0]))A.cur=null;
+    if(A.introId&&set.has(A.introId))A.introId=null;
+  }
+  reidx();
+  closeDlg();
+  render();
+  if($('#side-drawer')?.classList.contains('open'))renderSettingsSide();
+  toast(successToastMsg||`Deleted ${count} ${count===1?'word':'words'}`);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#side-drawer')?.classList.contains('open')){closeSettingsSide();return}const t=e.target.tagName;if(tab!='train'||!A||!P||['INPUT','TEXTAREA','SELECT'].includes(t)||e.ctrlKey||e.metaKey)return;const k=e.key;
+if(P.ph=='ask'&&P.ex.t==1&&/^[1-4]$/.test(k)){sel=P.ex.opts[k-1];render()}
+else if(k=='Enter'&&t!='BUTTON'){if(P.ph=='ask'&&P.ex&&P.ex.t==1&&sel)submit();else if(P.ph=='intro')introduce(P.it?P.it.id:'');else if(P.ph=='fb'&&!P.pend)adv()}
+else if(P.ph=='fb'&&P.pend&&/^[1-3]$/.test(k))rec(['correct','partial','incorrect'][k-1],1)});
+
+/* ---- Training landing: (1) resume / next session, (2) Book > Level > Lektion chooser ---- */
+let C={};const NB='(No book)',NL='(No level)',NU='Unassigned',lnum=s=>{const m=/^(?:lektion|lesson|lekt\.?|l)?\s*0*(\d+)$/i.exec(String(s||'').trim());return m?+m[1]:null},lkey=s=>{s=String(s||'').trim();if(!s)return NU;const n=lnum(s);return n?'Lektion '+n:s};
+/* Lessons come from the imported data; Menschen A1/A2 additionally show the expected Lektion 1-24 (empty ones are unavailable). Numeric order, not alphabetical. */
+function lessons(b,l){const m={};S.items.forEach(it=>{if((it.book||NB)==b&&(it.level||NL)==l)(m[lkey(it.lesson)]=m[lkey(it.lesson)]||[]).push(it)});if(/menschen/i.test(b)&&/^a[12]$/i.test(l))for(let n=1;n<=24;n++)m['Lektion '+n]=m['Lektion '+n]||[];const o=k=>{const n=lnum(k);return n?[0,n,'']:k==NU?[2,0,'']:[1,0,k]};return Object.keys(m).sort((a,b)=>{const x=o(a),y=o(b);return x[0]-y[0]||x[1]-y[1]||x[2].localeCompare(y[2],undefined,{numeric:true})}).map(k=>[k,m[k]])}
+function pickC(k,v){C[k]=v;if(k=='book'){C.lesson=null;const lv=[...new Set(S.items.filter(i=>(i.book||NB)==v).map(i=>i.level||NL))];C.level=lv.length==1?lv[0]:null}if(k=='level')C.lesson=null;render()}
+function startLesson(){
+  const x=lessons(C.book,C.level).find(y=>y[0]==C.lesson);
+  if(!x||!x[1].length)return;
+  if(A){
+    if(!confirm('An interrupted session is still open. Abandon it and start '+x[0]+'? Answers already submitted stay saved.'))return;
+    del('kv','active');S.kv.active=null;A=null;P=null;
+  }
+  startS(-1,x[1].map(i=>i.id),[C.book,C.level,C.lesson].join(' · '));
+}
+function vLand(){const last=[...S.sessions].sort((a,b)=>b.t-a.t)[0];let r1;
+if(A){const left=Math.max(0,S.set.min*6e4-elapsed()),c=A.cur,it=c&&SK[c.sk]&&S.im[c.k.split('|')[0]];r1=`<p><b>${esc(A.slot>=0?'Session '+(A.slot+1)+' ('+(S.set.times[A.slot]||'')+')':A.label||'Custom session')}</b> was interrupted.</p><p class="m">Answered ${A.c+A.p+A.i} (correct ${A.c}, partial ${A.p}, incorrect ${A.i}) · new words ${A.nw} · time left ${fmt(left)}${it?` · current question: ${SK[c.sk]} — ${esc(gname(it))}`:''}</p><div class="btn-grid-2" style="margin-top:12px"><button class="b" onclick="resumeS()">Resume</button><button class="b d" onclick="promptAbandon()">Abandon</button></div>`}
+else{const nx=S.set.times.findIndex((t,i)=>!['Completed','In progress'].includes(slotStatus(i)));r1=`<p>${last?`Last session completed: ${new Date(last.t).toLocaleString()} · ${last.c+last.p+last.i} exercises.`:'No previous session yet.'}</p><button class="b" style="width:100%;margin-top:8px" onclick="${nx>=0?`startS(${nx})`:`startS(-1,null,'Extra review')`}">${nx>=0?`Start next recommended: session ${nx+1} (${S.set.times[nx]})`:'Sessions done today: start an extra review'}</button><p class="m" style="margin-top:8px">${dueList().length} reviews due · ${S.items.filter(i=>!i.intro).length} new words available.</p>`}
+const chip=(k,v,lab,on,off)=>`<button class="chip ${on?'on':''} ${off?'off':''}" data-v="${esc(v)}" onclick="pickC('${k}',this.dataset.v)">${esc(lab)}</button>`,books=[...new Set(S.items.map(i=>i.book||NB))].sort(),lv=C.book?[...new Set(S.items.filter(i=>(i.book||NB)==C.book).map(i=>i.level||NL))].sort():[],ls=C.book&&C.level?lessons(C.book,C.level):[],sl=ls.find(x=>x[0]==C.lesson);let r2;
+if(!S.items.length)r2='<p class="m">No vocabulary yet. <a href="#" onclick="go(&apos;imp&apos;);return false">Import a CSV</a> first.</p>';else{r2=`<label>1. Book</label>${books.map(b=>chip('book',b,b,C.book==b)).join('')}`;
+if(C.book)r2+=`<label>2. Level</label>${lv.map(l=>chip('level',l,l,C.level==l)).join('')}`;
+if(ls.length)r2+=`<label>3. Lektion</label>${ls.map(([k,a])=>chip('lesson',k,k+' · '+(a.length||'empty'),C.lesson==k,!a.length)).join('')}`;
+if(sl){const its=sl[1],du=new Set(dueList().map(s=>s.id)),c={};its.forEach(i=>skillsFor(i).forEach(k=>c[k]=(c[k]||0)+1));r2+=its.length?`<label>4. Training</label><p>${its.length} words · ${its.filter(i=>!i.intro).length} new · ${its.filter(i=>du.has(i.id)).length} due</p><p class="m">Exercises supported by the data: ${Object.entries(c).map(([k,n])=>SK[k]+' '+n).join(' · ')}</p><button class="b" style="width:100%;margin-top:10px" onclick="startLesson()">Start ${esc(sl[0])}</button>${A?'<p class="m">An interrupted session exists. Starting this lesson will ask whether to abandon it.</p>':''}`:`<p class="m">No vocabulary imported for ${esc(sl[0])} yet, so it is unavailable for training.</p>`}}
+return`<h1>Training</h1><div class="card"><h2>Option 1 · Resume previous training</h2>${r1}</div><div class="card"><h2>Option 2 · Choose what to study</h2>${r2}</div>`}
+initDlgInteractions();window.ready=load().then(render);
+</script></body></html>

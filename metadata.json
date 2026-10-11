@@ -1,0 +1,6 @@
+{
+  "name": "German Memory Coach",
+  "description": "Offline German vocabulary training with active recall and spaced repetition, packaged as an Android app.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

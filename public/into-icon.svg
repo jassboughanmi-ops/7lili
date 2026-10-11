@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <defs>
+    <linearGradient id="into-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0f4f8"/>
+    </linearGradient>
+    <clipPath id="icon-flag-clip">
+      <rect x="96" y="52" width="26" height="24" rx="4" ry="4"/>
+    </clipPath>
+  </defs>
+
+  <!-- Clean rounded icon base -->
+  <rect x="2" y="2" width="124" height="124" rx="28" fill="url(#into-bg)" stroke="#0B3C68" stroke-width="3" stroke-opacity="0.15"/>
+
+  <!-- INTO Letters scaled into icon -->
+  <g transform="translate(4, 22) scale(0.24)">
+    <!-- 'I' with red accent -->
+    <path d="M 26,22 L 53,22 L 26,49 Z" fill="#DE222B" />
+    <path d="M 53,30 L 53,130 L 26,130 L 26,57 Z" fill="#0B3C68" />
+
+    <!-- 'N' -->
+    <path d="M 74,22 L 101,22 L 148,93 L 148,22 L 174,22 L 174,130 L 147,130 L 101,59 L 101,130 L 74,130 Z" fill="#0B3C68" />
+
+    <!-- 'T' -->
+    <path d="M 188,22 L 286,22 L 286,48 L 251,48 L 251,130 L 223,130 L 223,48 L 188,48 Z" fill="#0B3C68" />
+
+    <!-- 'O' with German flag badge -->
+    <path fill-rule="evenodd" d="M 342,22 C 314,22 298,38 298,66 L 298,86 C 298,114 314,130 342,130 L 378,130 C 406,130 422,114 422,86 L 422,66 C 422,38 406,22 378,22 Z M 344,48 C 333,48 326,55 326,67 L 326,85 C 326,97 333,104 344,104 L 376,104 C 387,104 394,97 394,85 L 394,67 C 394,55 387,48 376,48 Z" fill="#0B3C68" />
+
+    <!-- German Flag -->
+    <g>
+      <rect x="382" y="55" width="76" height="16" rx="4" fill="#181818"/>
+      <rect x="382" y="71" width="76" height="16" fill="#DE222B"/>
+      <rect x="382" y="87" width="76" height="16" rx="4" fill="#FFCC00"/>
+      <rect x="382" y="55" width="76" height="48" rx="7" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+    </g>
+
+    <!-- ACADEMY -->
+    <text x="245" y="172" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="28" letter-spacing="16" fill="#DE222B">ACADEMY</text>
+  </g>
+</svg>

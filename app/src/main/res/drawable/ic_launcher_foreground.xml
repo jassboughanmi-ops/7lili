@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="14"
+        android:translateY="20"
+        android:scaleX="0.74"
+        android:scaleY="0.74">
+        <!-- White Rounded Badge Container -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M20,10 L88,10 A12,12 0 0,1 100,22 L100,68 A12,12 0 0,1 88,80 L20,80 A12,12 0 0,1 8,68 L8,22 A12,12 0 0,1 20,10 Z" />
+
+        <!-- INTO I red corner accent -->
+        <path
+            android:fillColor="#DE222B"
+            android:pathData="M16,24 L28,24 L16,36 Z" />
+        <!-- INTO I blue trunk -->
+        <path
+            android:fillColor="#0B3C68"
+            android:pathData="M28,28 L28,62 L16,62 L16,40 Z" />
+
+        <!-- N stem & diagonal -->
+        <path
+            android:fillColor="#0B3C68"
+            android:pathData="M34,24 L42,24 L56,48 L56,24 L63,24 L63,62 L55,62 L42,38 L42,62 L34,62 Z" />
+
+        <!-- German Flag pill on right -->
+        <path
+            android:fillColor="#181818"
+            android:pathData="M70,34 L92,34 L92,42 L70,42 Z" />
+        <path
+            android:fillColor="#DE222B"
+            android:pathData="M70,42 L92,42 L92,50 L70,50 Z" />
+        <path
+            android:fillColor="#FFCC00"
+            android:pathData="M70,50 L92,50 L92,58 L70,58 Z" />
+
+        <!-- Red ACADEMY bottom accent -->
+        <path
+            android:fillColor="#DE222B"
+            android:pathData="M22,70 L86,70 L86,74 L22,74 Z" />
+    </group>
+</vector>
